@@ -1,0 +1,22 @@
+{
+  "name": "tamago",
+  "version": "0.0.0",
+  "description": "Tama-Town test framework",
+  "dependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-sass": "*",
+    "modules": "git://github.com/asterick/modules.git"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asterick/tamago.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "36079abe4b7f6008a5238ea1514fa7ab02893adc",
+  "bugs": {
+    "url": "https://github.com/asterick/tamago/issues"
+  }
+}

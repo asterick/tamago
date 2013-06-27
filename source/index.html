@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="utf-8" />
+    	<title>TamaTown test harness</title>
+        <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans' rel='stylesheet' type='text/css'>
+        <link href='style/runtime.css' rel='stylesheet' type='text/css'>
+
+        <script src='files/modules.js' type='text/javascript'></script>
+    </head>
+    <body>
+
+
+    	<tamago>
+	    	<display>
+	    		<canvas width="64" height="32"></canvas>
+	    	</display>
+	    	<disassembly>
+	    		<instruction>
+	    			<location>CC00</location>
+	    			<instruction>ADC</instruction>
+	    			<addressing mode="immediate">00</addressing>
+
+	    		</instruction>
+	    	</disassembly>
+	    	<cpu></cpu>
+	    	<registers></registers>
+	    	<memory></memory>
+	    	<dram></dram>
+	    </tamago>
+
+    	<!-- TODO -->
+
+        <script type='text/javascript' src='tamago.js'></script>
+    </body>
+</html>

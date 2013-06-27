@@ -1,0 +1,71 @@
+Known Register Map
+
+$3000	P_CPU_Bank_Ctrl
+$3001	P_CPU_Clk_Ctrl
+$3002	P_32768_EN
+$3007	P_Wakeup_Ctrl
+$3008
+$3010	P_PortA_Config
+$3011	P_PortA_Dir
+$3012	P_PortA_Data
+$3013	P_PortA_Strobe
+$3014	P_PortB_Config
+$3015	P_PortB_Dir
+$3016	P_PortB_Data
+$3030
+$3031
+$3032	Timer Output?
+$3033	Timer Output?
+$3034	Timer Output?
+$3035	Timer Output?
+$303E	P_Seg0_Scan_Ctrl
+$303F	P_Seg8_Scan_Ctrl
+$3040	P_LCD_Setup1
+$3041	P_LCD_Setup2
+$3042	P_LCD_Clock1
+$3043	P_LCD_Clock2
+$3044	P_LCD_SEG_Num
+$3045	P_LCD_COM_Num
+$3046
+$3047	P_LCD_Buffer_Ctrl
+$3048
+$3049	P_LCD_Pump_Ctrl
+$304a
+$3050
+$3051
+$3058
+$3059
+$305a
+$305b
+$3064
+$3071
+$30b1
+$30b7
+$30ba
+$30ff
+
+
+
+IRQ Vector Table
+================
+TM0
+NoService
+NoService
+2048
+8192
+SPU
+SPI
+FP (LCD Frame)
+NoService
+NoService
+TM1
+NoService
+TBH
+TBL
+NoService
+NoService
+
+NMI Vectors
+===========
+LV Detect
+TIMER1
