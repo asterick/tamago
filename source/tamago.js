@@ -1,5 +1,4 @@
-var tamago = require("tamago/main.js"),
-	instructions = require("tamago/instructions.js");
+var tamago = require("tamago/main.js");
 
 ready(function () {
 	var xhr = new XMLHttpRequest();

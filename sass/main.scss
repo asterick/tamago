@@ -1,0 +1,36 @@
+body {
+	background: $white;
+}
+
+tamago {
+	display: table;
+
+	color: $black;
+	text-align: center;
+
+	memory, registers {
+		row {
+			display: table-row;
+
+			&:nth-child(even) {
+				background: $grey-2;
+			}
+			&:nth-child(odd) {
+				background: $grey;
+			}
+
+			byte {
+				display: table-cell;
+				min-width: 22px;
+
+				&:nth-child(even) {
+					color: $blue-2;
+				}
+				&:nth-child(odd) {
+					color: $blue;
+				}
+
+			}
+		}
+	}
+}

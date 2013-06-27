@@ -1,8 +1,2 @@
-$grey: #eee;
-$pink: #faf;
-
-body {
-	background: $grey;
-	color: $pink;
-}
-
+@import "palette.scss",
+		"main.scss";
