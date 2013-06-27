@@ -15,6 +15,31 @@
 	    	<display>
 	    		<canvas width="64" height="32"></canvas>
 	    	</display>
+	    	<cpu>
+	    		<registers>
+		    		<register name="PC">0000</register>
+		    		<register name="S">00</register>
+		    		<register name="A">00</register>
+		    		<register name="X">00</register>
+		    		<register name="Y">00</register>
+		    	</registers>
+
+	    		<flags>
+		    		<flag name="C" active></flag>
+		    		<flag name="Z"></flag>
+		    		<flag name="I"></flag>
+		    		<flag name="D"></flag>
+		    		<flag name="C"></flag>
+		    		<flag name="V"></flag>
+		    		<flag name="N"></flag>
+		    	</flags>
+	    	</cpu>
+	    	<registers>
+	    		<!-- 0x30xx -->
+	    	</registers>
+	    	<memory>
+	    		<!-- 0x0000 ~ 0x0600 -->
+	    	</memory>
 	    	<disassembly>
 	    		<instruction>
 	    			<location>CC00</location>
@@ -23,10 +48,6 @@
 
 	    		</instruction>
 	    	</disassembly>
-	    	<cpu></cpu>
-	    	<registers></registers>
-	    	<memory></memory>
-	    	<dram></dram>
 	    </tamago>
 
     	<!-- TODO -->

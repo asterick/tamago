@@ -1,3 +1,7 @@
+/** 
+  *  Port name definition table
+  */
+
 module.exports = {
 	0x3000: "P_CPU_Bank_Ctrl",
 	0x3001: "P_CPU_Clk_Ctrl",
