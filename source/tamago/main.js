@@ -1,61 +1,88 @@
 var config = require ("tamago/config.js"),
-	system = require("tamago/cpu/system.js"),
+	tamagotchi = require("tamago/cpu/tamagotchi.js"),
 	disassemble = require("tamago/disassembler.js"),
+	
+	object = require("util/object.js"),
 	ejs = require("util/ejs.js"),
-	tmpl = requireText("tamago/templates/main.html");
-
-ready(function () {
-	tmpl = ejs.parse(tmpl);
-})
+	template = requireText("tamago/templates/main.html");
 
 module.exports = (function() {
 	var instructions;
 
-	function Tamago(element, bios) {
-		element.innerHTML = tmpl(config);
+	function Tamago(element) {
+		this.configure(element);
 
-		this.element = element;
-		this.bios = new Uint8Array(bios);
+		var u8 = new Uint8Array(this.bios);
 
-		this.bind();
-
-		var u8 = new Uint8Array(bios);
-
-		this.cpu = {
-			pc: 0xCC00,
-			a: 0,
-			x: 0,
-			y: 0,
-			s: 0,
-			c: 0,
-			z: 0,
-			i: 0,
-			d: 0,
-			c: 0,
-			v: 0,
-			n: 0,
-			read: function (addr) {
-				// THIS IS TEMPORARY
-				if (addr < 0x4000) { return addr&0xFF; }
-				if (addr >= 0xC000) { return u8[addr&0x3FFF]; }
-				return u8[addr - 0x4000];
-			}
-		};
+		this.system = new tamagotchi.system();
+		this._pixeldata = this.body.display.getImageData(0,0,64,32),
+		this._pixels = new Uint32Array(this._pixeldata.data.buffer)
 
 		this.refresh();
 	}
 
-	Tamago.prototype.refresh = function () {
+	Tamago.prototype.palette = [0xFFFFFFFF,0xFFAAAAAA,0xFF555555,0xFF000000];
+
+	Tamago.prototype.step = function (e) {
+		this.system.step();
+		this.refresh();
+	}
+
+	Tamago.prototype.run = function (e) {
 		var that = this;
 
-		var disasm = disassemble.disassemble(config.instructionCount, this.cpu.pc, this.cpu);
+		function frame() {
+			that.system.step_frame();
+			that.refresh();
+
+			if (that.running) {
+				requestAnimationFrame(frame);
+			}
+		}
+
+		this.running = !this.running;	
+		e.target.attributes.value.value = this.running ? "stop" : "run";
+		frame();
+	}
+
+	Tamago.prototype.reset = function (e) {
+		this.system.reset();
+	}
+
+	Tamago.prototype.refresh_simple = function () {
+		var a = 0, px = 0;
+
+		while (a < 0x200) {
+			var d = this.system._dram[a++], b = 6;
+
+			while (b >= 0) {
+				this._pixels[px++] = this.palette[(d >> b) & 3];
+				b -= 2;
+			}
+		}
+	
+		this.body.display.putImageData(this._pixeldata, 0, 0);
+	}
+
+	Tamago.prototype.refresh_debugger = function () {
+		var that = this;
+
+		var disasm = disassemble.disassemble(config.instructionCount, this.system.pc, this.system);
+
+		object.each(this.body.registers, function (elem, register) {
+			elem.innerHTML = config.toHex(2, that.system[register]);
+		})
+
+		object.each(this.body.flags, function (elem, flag) {
+			elem.classList.toggle("active", Boolean(that.system[flag]));
+		})
 
 		this.body.memory.forEach(function (m, i) {
-			m.innerHTML = config.toHex(2, that.cpu.read(i));
+			m.innerHTML = config.toHex(2, that.system._wram[i]);
 		})
 
 		this.body.control.forEach(function (m, i) {
-			m.innerHTML = config.toHex(2, that.cpu.read(i+0x3000));
+			m.innerHTML = config.toHex(2, that.system._cpureg[i]);
 		})
 
 		disasm.forEach(function (g, i) {
@@ -76,31 +103,68 @@ module.exports = (function() {
 			attr(row.addressing, 'address', g.address);
 			attr(row.instruction, 'port', g.port);
 		});
+
+		this.refresh_simple();
 	}
 
-	Tamago.prototype.bind = function() {
+	Tamago.prototype.configure = function(element) {
+		var data = Object.create(config),
+			tmpl = ejs.parse(template);
+
+		data.debug = Boolean(element.attributes.debugger);
+
+		element.innerHTML = tmpl(data);
+
 		// Bind to HTML
-		this.body = {
-			instructions: [].map.call(this.element.querySelectorAll("instruction"), function (i) {
-				return {
-					instruction: i,
-					location: i.querySelector("location"),
-					opcode: i.querySelector("opcode"),
-					data: i.querySelector("data"),
-					addressing: i.querySelector("addressing"),
-				};
-			}),
-			control: [].map.call(this.element.querySelectorAll("control byte"), function (b) {
-				return b;
-			}),
-			memory: [].map.call(this.element.querySelectorAll("memory byte"), function (b) {
-				return b;
-			})
-		};
+		if (data.debug) {
+			var that = this;
+
+			[].forEach.call(document.querySelectorAll("input[type=button]"), function (el) {
+				el.addEventListener("click", that[el.attributes.action.value].bind(that))
+			});
+
+			this.body = {
+				flags: [].reduce.call(element.querySelectorAll("flag"), function (acc, f) { 
+					acc[f.attributes.name.value.toLowerCase()] = f;
+					return acc; 
+				}, {}),
+				registers: [].reduce.call(element.querySelectorAll("register"), function (acc, r) { 
+					acc[r.attributes.name.value.toLowerCase()] = r;
+					return acc; 
+				}, {}),
+				instructions: [].map.call(element.querySelectorAll("instruction"), function (i) {
+					return {
+						instruction: i,
+						location: i.querySelector("location"),
+						opcode: i.querySelector("opcode"),
+						data: i.querySelector("data"),
+						addressing: i.querySelector("addressing"),
+					};
+				}),
+				control: [].map.call(element.querySelectorAll("control byte"), function (b) {
+					return b;
+				}),
+				memory: [].map.call(element.querySelectorAll("memory byte"), function (b) {
+					return b;
+				}),
+				display: element.querySelector("display canvas").getContext("2d")
+			};
+			this.refresh = this.refresh_debugger;
+		} else {
+			this.body = { display: element.querySelector("display canvas").getContext("2d") };
+
+			this.refresh = this.refresh_simple;
+			this.run();
+		}
 	};
 
 	function start(bios) {
-		new Tamago(document.querySelector("tamago"), bios);
+		// Bind to tamago system class
+		tamagotchi.system.prototype.bios = bios;
+
+		[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
+			new Tamago(elem);
+		});
 	}
 
 	return {
