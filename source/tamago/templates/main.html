@@ -1,50 +1,56 @@
-<display>
-	<canvas width="64" height="32"></canvas>
-</display>
-<cpu>
-	<registers>
-		<register name="PC">0000</register>
-		<register name="S">00</register>
-		<register name="A">00</register>
-		<register name="X">00</register>
-		<register name="Y">00</register>
-	</registers>
+<column>
+	<display>
+		<canvas width="64" height="32"></canvas>
+	</display>
+	<cpu>
+		<flags>
+			<flag name="C" class="active"></flag>
+			<flag name="Z"></flag>
+			<flag name="I"></flag>
+			<flag name="D"></flag>
+			<flag name="C"></flag>
+			<flag name="V"></flag>
+			<flag name="N"></flag>
+		</flags>
 
-	<flags>
-		<flag name="C" active></flag>
-		<flag name="Z"></flag>
-		<flag name="I"></flag>
-		<flag name="D"></flag>
-		<flag name="C"></flag>
-		<flag name="V"></flag>
-		<flag name="N"></flag>
-	</flags>
-</cpu>
-<registers>
-	<% for (var i = 0; i < 0x100; i += registerBytesPerLine ) { %>
-		<row>
-			<address><%= toHex(4, i+0x3000) %></address>
-			<% for (var b = 0; b < registerBytesPerLine; b ++ ) { %>
-				<byte><%= "00" %></byte>
-			<% } %>
-		</row>
-	<% } %>
-</registers>
-<memory>
-	<% for (var i = 0; i < 0x600; i += memoryBytesPerLine ) { %>
-		<row>
-			<address><%= toHex(4, i) %></address>
-			<% for (var b = 0; b < memoryBytesPerLine; b ++ ) { %>
-				<byte><%= "00" %></byte>
-			<% } %>
-		</row>
-	<% } %>
-</memory>
-<disassembly>
-	<instruction>
-		<location>CC00</location>
-		<instruction>ADC</instruction>
-		<addressing mode="immediate">00</addressing>
-
-	</instruction>
-</disassembly>
+		<registers>
+			<register name="PC">0000</register>
+			<register name="S">00</register>
+			<register name="A">00</register>
+			<register name="X">00</register>
+			<register name="Y">00</register>
+		</registers>
+	</cpu>
+	<control>
+		<% for (var i = 0; i < 0x100; i += registerBytesPerLine ) { %>
+			<row>
+				<address><%= toHex(4, i+0x3000) %></address>
+				<% for (var b = 0; b < registerBytesPerLine; b ++ ) { %>
+					<byte data-address="<%= i+b+0x3000 %>"><%= "00" %></byte>
+				<% } %>
+			</row>
+		<% } %>
+	</control>
+</column>
+<column>
+	<memory>
+		<% for (var i = 0; i < 0x600; i += memoryBytesPerLine ) { %>
+			<row>
+				<address><%= toHex(4, i) %></address>
+				<% for (var b = 0; b < memoryBytesPerLine; b ++ ) { %>
+					<byte data-address="<%= i+b %>"><%= "00" %></byte>
+				<% } %>
+			</row>
+		<% } %>
+	</memory>
+	<disassembly>
+		<% for (var i = 0; i < instructionCount; i++ ) { %>
+		<instruction port>
+			<location></location>
+			<opcode></opcode>
+			<addressing mode address></addressing>
+			<data></data>
+		</instruction>
+		<% } %>
+	</disassembly>
+</column>

@@ -9,7 +9,7 @@ module.exports = {
     },
     1: {
         instruction: "ORA",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     5: {
         instruction: "ORA",
@@ -25,7 +25,7 @@ module.exports = {
     },
     9: {
         instruction: "ORA",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     10: {
         instruction: "ASL",
@@ -45,15 +45,15 @@ module.exports = {
     },
     17: {
         instruction: "ORA",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     21: {
         instruction: "ORA",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     22: {
         instruction: "ASL",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     24: {
         instruction: "CLC",
@@ -61,15 +61,15 @@ module.exports = {
     },
     25: {
         instruction: "ORA",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     29: {
         instruction: "ORA",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     30: {
         instruction: "ASL",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     32: {
         instruction: "JSR",
@@ -77,7 +77,7 @@ module.exports = {
     },
     33: {
         instruction: "AND",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     36: {
         instruction: "BIT",
@@ -97,7 +97,7 @@ module.exports = {
     },
     41: {
         instruction: "AND",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     42: {
         instruction: "ROL",
@@ -121,15 +121,15 @@ module.exports = {
     },
     49: {
         instruction: "AND",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     53: {
         instruction: "AND",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     54: {
         instruction: "ROL",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     56: {
         instruction: "SEC",
@@ -137,15 +137,15 @@ module.exports = {
     },
     57: {
         instruction: "AND",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     61: {
         instruction: "AND",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     62: {
         instruction: "ROL",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     64: {
         instruction: "RTI",
@@ -153,7 +153,7 @@ module.exports = {
     },
     65: {
         instruction: "EOR",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     69: {
         instruction: "EOR",
@@ -169,7 +169,7 @@ module.exports = {
     },
     73: {
         instruction: "EOR",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     74: {
         instruction: "LSR",
@@ -193,15 +193,15 @@ module.exports = {
     },
     81: {
         instruction: "EOR",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     85: {
         instruction: "EOR",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     86: {
         instruction: "LSR",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     88: {
         instruction: "CLI",
@@ -209,15 +209,15 @@ module.exports = {
     },
     89: {
         instruction: "EOR",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     93: {
         instruction: "EOR",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     94: {
         instruction: "LSR",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     96: {
         instruction: "RTS",
@@ -225,7 +225,7 @@ module.exports = {
     },
     97: {
         instruction: "ADC",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     101: {
         instruction: "ADC",
@@ -241,7 +241,7 @@ module.exports = {
     },
     105: {
         instruction: "ADC",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     106: {
         instruction: "ROR",
@@ -265,15 +265,15 @@ module.exports = {
     },
     113: {
         instruction: "ADC",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     117: {
         instruction: "ADC",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     118: {
         instruction: "ROR",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     120: {
         instruction: "SEI",
@@ -281,19 +281,19 @@ module.exports = {
     },
     121: {
         instruction: "ADC",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     125: {
         instruction: "ADC",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     126: {
         instruction: "ROR",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     129: {
         instruction: "STA",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     132: {
         instruction: "STY",
@@ -333,19 +333,19 @@ module.exports = {
     },
     145: {
         instruction: "STA",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     148: {
         instruction: "STY",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     149: {
         instruction: "STA",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     150: {
         instruction: "STX",
-        addressing: "zeropage,Y"
+        addressing: "zeropageY"
     },
     152: {
         instruction: "TYA",
@@ -353,7 +353,7 @@ module.exports = {
     },
     153: {
         instruction: "STA",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     154: {
         instruction: "TXS",
@@ -361,19 +361,19 @@ module.exports = {
     },
     157: {
         instruction: "STA",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     160: {
         instruction: "LDY",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     161: {
         instruction: "LDA",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     162: {
         instruction: "LDX",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     164: {
         instruction: "LDY",
@@ -393,7 +393,7 @@ module.exports = {
     },
     169: {
         instruction: "LDA",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     170: {
         instruction: "TAX",
@@ -417,19 +417,19 @@ module.exports = {
     },
     177: {
         instruction: "LDA",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     180: {
         instruction: "LDY",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     181: {
         instruction: "LDA",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     182: {
         instruction: "LDX",
-        addressing: "zeropage,Y"
+        addressing: "zeropageY"
     },
     184: {
         instruction: "CLV",
@@ -437,7 +437,7 @@ module.exports = {
     },
     185: {
         instruction: "LDA",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     186: {
         instruction: "TSX",
@@ -445,23 +445,23 @@ module.exports = {
     },
     188: {
         instruction: "LDY",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     189: {
         instruction: "LDA",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     190: {
         instruction: "LDX",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     192: {
         instruction: "CPY",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     193: {
         instruction: "CMP",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     196: {
         instruction: "CPY",
@@ -481,7 +481,7 @@ module.exports = {
     },
     201: {
         instruction: "CMP",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     202: {
         instruction: "DEC",
@@ -505,15 +505,15 @@ module.exports = {
     },
     209: {
         instruction: "CMP",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     213: {
         instruction: "CMP",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     214: {
         instruction: "DEC",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     216: {
         instruction: "CLD",
@@ -521,23 +521,23 @@ module.exports = {
     },
     217: {
         instruction: "CMP",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     221: {
         instruction: "CMP",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     222: {
         instruction: "DEC",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     224: {
         instruction: "CPX",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     225: {
         instruction: "SBC",
-        addressing: "(indirect,X)"
+        addressing: "indirectX"
     },
     228: {
         instruction: "CPX",
@@ -557,7 +557,7 @@ module.exports = {
     },
     233: {
         instruction: "SBC",
-        addressing: "immidiate"
+        addressing: "immediate"
     },
     234: {
         instruction: "NOP",
@@ -581,15 +581,15 @@ module.exports = {
     },
     241: {
         instruction: "SBC",
-        addressing: "(indirect),Y"
+        addressing: "indirectY"
     },
     245: {
         instruction: "SBC",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     246: {
         instruction: "INC",
-        addressing: "zeropage,X"
+        addressing: "zeropageX"
     },
     248: {
         instruction: "SED",
@@ -597,14 +597,14 @@ module.exports = {
     },
     249: {
         instruction: "SBC",
-        addressing: "absolute,Y"
+        addressing: "absoluteY"
     },
     253: {
         instruction: "SBC",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     },
     254: {
         instruction: "INC",
-        addressing: "absolute,X"
+        addressing: "absoluteX"
     }
 };

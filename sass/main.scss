@@ -1,27 +1,216 @@
+$padding-small: 2px;
+$padding-wide: 10px;
+
 body {
 	background: $white;
+	font-family: monospace;
 }
 
 tamago {
-	display: table;
+	display: block;
 
+	position: relative;
 	color: $black;
-	text-align: center;
 
-	memory, registers {
-		row {
-			display: table-row;
+	column {
+		display: inline-block;
+	}
+
+	display {
+		text-align: center;
+		display: block;
+
+		padding: 20px;
+
+		canvas {
+			display: inline-block;
+			background: $light-grey;
+
+			width: 128px;
+			height: 64px;
+		}
+	}
+
+	cpu {
+		display: block;
+
+		registers {
+			display: block;
+			padding: $padding-wide;
+
+			&:before {
+				content: "Registers";
+				display: block;
+			}
+
+			register {
+				display: block;
+
+				&:before {
+					display: inline-block;
+					text-align: right;
+					content: attr(name);
+					width:	 32px;
+					padding: $padding-small $padding-wide;
+				}
+			}
+		}
+		flags {
+			display: block;
+			padding: $padding-wide;
+
+			&:before {
+				content: "Flags";
+				display: block;
+			}
+
+			flag {
+				display: inline-block;
+				position: relative;
+				min-width: 16px;
+				padding: $padding-small;
+
+				&:after {
+					@include icon-FontAwesome();
+					content: $check-empty;
+					display:block;
+				}
+				&.active:after {
+					content: $check;
+				}
+
+				&:before {
+					text-align: center;
+					content: attr(name);
+					display:block;
+				}
+			}
+		}
+	}
+
+	disassembly {
+		display: block;
+		overflow: hidden;
+
+		instruction {
+			display: block;
+			position: relative;
+
+			&.active {
+				background: $green;
+			}
+
+			location {
+				color: $bright-orange;
+				display: inline-block;
+				width: 4ex;
+				padding: 0 1ex;
+			}
+			opcode {
+				color: $blue-green-2;
+				display: inline-block;
+				width: 3ex;
+				padding: 0 1ex;
+			}
+
+			data {
+				display: inline-block;
+				width: 16ex;
+				color: $purple;
+			}
+
+			addressing {
+				color: $blue-2;
+				display: inline-block;
+				width: 14ex;
+
+				// Prefix immediate values
+				&:before, &:after {
+					color: $red-2;
+					display: inline;
+				}
+
+				&[mode=immediate], &[mode=absolute], &[mode=absoluteX], &[mode=absoluteY], &[mode=zeropage], &[mode=zeropageX], &[mode=zeropageY] {
+					&:before { content: "$"; }
+				}
+
+				&[mode=indirect]:before, &[mode=indirectX], &[mode=indirectY] {
+					content: "("
+				}
+				&[mode=indirect]:after {
+					content: ")"
+				}
+
+				&[mode=indirectX]:after {
+					content: ", X)"
+				}
+				&[mode=indirectY]:after {
+					content: ", Y)"
+				}
+
+				&[mode=zeropageX]:after, &[mode=absoluteX]:after {
+					content: ", X"
+				}
+				&[mode=zeropageY]:after, &[mode=absoluteY]:after {
+					content: ", Y"
+				}
+
+				// THIS NEEDS TO BE DONE
+				&[mode=relative] {}
+			}
+
+			&[port]:after {
+				color: $green-2;
+				content: "; " attr(port);
+				text-align: left;
+			}
 
 			&:nth-child(even) {
-				background: $grey-2;
+				background: $white;
 			}
 			&:nth-child(odd) {
-				background: $grey;
+				background: $light-grey;
+			}
+			&.active {
+				background: $yellow;
+			}
+		}
+	}
+
+	memory {
+		height: 12em;
+	}
+
+	control {
+		height: 24em;
+	}
+
+	memory, control {
+		display: block;
+		overflow-y: scroll;
+
+		row {
+			height: 1em;
+			display: block;
+			
+			&:nth-child(even) {
+				background: $white;
+			}
+			&:nth-child(odd) {
+				background: $light-grey;
 			}
 
+			address {
+				display: inline-block;
+				width:	36px;
+				text-align: center;
+			}
 			byte {
-				display: table-cell;
-				min-width: 22px;
+				display: inline-block;
+				text-align: center;
+				min-width: 2ex;
+				padding: 0;
+				margin: 0;
 
 				&:nth-child(even) {
 					color: $blue-2;
@@ -29,7 +218,6 @@ tamago {
 				&:nth-child(odd) {
 					color: $blue;
 				}
-
 			}
 		}
 	}

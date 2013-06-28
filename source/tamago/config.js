@@ -8,5 +8,6 @@ module.exports = {
 		return zeros.substr(0, w).substr(i.length) + i;
 	},
 	memoryBytesPerLine: 32,
-	registerBytesPerLine: 8
+	registerBytesPerLine: 8,
+	instructionCount: 32
 };

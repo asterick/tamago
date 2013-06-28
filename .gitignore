@@ -2,4 +2,4 @@
 .sass-cache
 node_modules
 source/tamago.release.js
-source/style
+source/style/runtime.css
