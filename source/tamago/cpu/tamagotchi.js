@@ -25,7 +25,7 @@ module.exports = (function(){
 
 	system.prototype = Object.create(r6502);
 
-	system.prototype.CLOCK_RATE = 32768;
+	system.prototype.CLOCK_RATE = 1000000;
 	system.prototype.MAX_ADVANCE = 1;
 
 	system.prototype.step_realtime = function (trace) {
@@ -45,6 +45,11 @@ module.exports = (function(){
 			}
 		} else {
 			while(this.cycles > 0) { this.step(); }
+		}
+
+		this._g = (this._g || 10) - 1;
+		if (this._g <= 0) {
+			this.nmi();
 		}
 	}
 
@@ -91,7 +96,7 @@ module.exports = (function(){
 		case 0x00:
 			break ;
 		default:
-			console.log("Unhandled register read (" + (0x3000+reg).toString(16) + ")", "  ", ports[reg|0x3000] || "---");
+			console.log("Unhandled register read  (" + (0x3000+reg).toString(16) + ")", "  ", ports[reg|0x3000] || "---");
 		}
 
 		return this._cpureg[reg];

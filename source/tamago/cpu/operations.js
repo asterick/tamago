@@ -173,8 +173,8 @@ module.exports = (function(){
 			cpu.push(cpu.pc & 0xFF);
 			cpu.push(cpu.p | 0x10); // Push program status 'B' set
 			
-			// TODO: Determine actual IRQ vector here
-			cpu.pc = cpu.read(0xFFFC);
+			// THIS WILL CRASH UNLESS OVERLAY HAPPENS
+			cpu.pc = cpu.read(0xFFFE);
 		},
 
 		BNE: function (cpu, addr) { if(!cpu.z) cpu.pc = addr; },

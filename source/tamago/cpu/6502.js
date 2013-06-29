@@ -25,42 +25,59 @@ module.exports = (function(){
 		});
 	}
 
+	r6502.nmi = function () {
+		this.push(this.pc >> 8);
+		this.push(this.pc & 0xFF);
+		this.push(this.p);
+
+		this.pc = this.read_16(0xFFFA);
+	};
+
+	r6502.irq = function () {
+		this.push(this.pc >> 8);
+		this.push(this.pc & 0xFF);
+		this.push(this.p);
+
+		// THIS WILL CRASH UNLESS OVERLAY HAPPENS
+		this.pc = this.read_16(0xFFFE);
+	};
+
 	r6502.step = function () {
 		var next = ops[this.next()];
 		if (next === undefined) { throw new Error("System has crashed (invalid operation)"); }
 		next.operation(this, next.address(this));
 		this.cycles -= next.cycles;
-	}
+	};
 
 	r6502.next = function () {
 		var d = this.read(this.pc++);
 		this.pc &= 0xFFFF;
 		return d;
-	}
+	};
 
 	r6502.next_16 = function () {
 		var l = this.next(),
 			h = this.next();
 
 		return l | (h << 8);
-	}
+	};
 
 	r6502.read_16 = function (addr) {
 		var l = this.read(addr),
 			h = this.read((addr+1) & 0xFFFF);
 
 		return l | (h << 8);
-	}
+	};
 
 	r6502.pull = function () {
 		this.s = (this.s + 1) & 0xFF;
 		return this.read(this.s | 0x100);
-	}
+	};
 
 	r6502.push = function (data) {
 		this.write(this.s | 0x100, data);
 		this.s = (this.s - 1) & 0xFF;
-	}
+	};
 
 	Object.defineProperty(r6502, "p", {
 		get: function () {
@@ -80,7 +97,7 @@ module.exports = (function(){
 			this.v = v & 0x40;
 			this.n = v & 0x80;
 		}
-	})
+	});
 
 	return r6502;
 })();

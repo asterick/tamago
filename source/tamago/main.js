@@ -123,6 +123,8 @@ module.exports = (function() {
 			attr(row.instruction, 'port', g.port);
 		});
 
+		// TODO: CLEAR UNUSED LINES
+
 		this.refresh_simple();
 	}
 

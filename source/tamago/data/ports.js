@@ -27,5 +27,6 @@ module.exports = {
 	0x3044: "P_LCD_SEG_Num",
 	0x3045: "P_LCD_COM_Num",
 	0x3047: "P_LCD_Buffer_Ctrl",
-	0x3049: "P_LCD_Pump_Ctrl"
+	0x3049: "P_LCD_Pump_Ctrl",
+	0x3076: "P_IRQ_Ctrl"
 };
