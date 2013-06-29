@@ -1,9 +1,11 @@
 module.exports = (function(){
 	var addressing = require("tamago/cpu/address.js"),
 		operations = require("tamago/cpu/operations.js"),
-		instructions = require("tamago/data/instructions.js");
+		instructions = require("tamago/data/instructions.js"),
+		object = require("util/object.js");
 
-	var r6502 = {};
+	var r6502 = {},
+		ops = {};
 
 	r6502.reset = function () {
 		this.a = 0;
@@ -13,15 +15,25 @@ module.exports = (function(){
 		this.s = 0;
 		this.p = 0;
 		this.cycles = 0;
+
+		object.each(instructions, function(op, code) {
+			ops[code] = {
+				operation: operations[op.instruction],
+				address: addressing[op.addressing],
+				cycles: op.cycles || 1 // TODO: ACTUALLY MAKE THIS ACCURATE
+			};
+		});
 	}
 
 	r6502.step = function () {
-		// TODO!
-		this.cycles--;
+		var next = ops[this.next()];
+		if (next === undefined) { throw new Error("System has crashed (invalid operation)"); }
+		next.operation(this, next.address(this));
+		this.cycles -= next.cycles;
 	}
 
 	r6502.next = function () {
-		var d = this.read(this.pc);
+		var d = this.read(this.pc++);
 		this.pc &= 0xFFFF;
 		return d;
 	}

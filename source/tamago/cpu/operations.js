@@ -22,12 +22,12 @@ module.exports = (function(){
 		SEI: function (cpu, addr) { cpu.i = 1; },
 
 		// Transfer
-		TXA: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.a); },
-		TYA: function (cpu, addr) { set_nz(cpu, cpu.y = cpu.a); },
-		TXS: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.s); },
-		TAY: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.y); },
-		TAX: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.x); },
-		TSX: function (cpu, addr) { set_nz(cpu, cpu.s = cpu.x); },
+		TXA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.x); },
+		TYA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.y); },
+		TXS: function (cpu, addr) { set_nz(cpu, cpu.s = cpu.x); },
+		TAY: function (cpu, addr) { set_nz(cpu, cpu.y = cpu.a); },
+		TAX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.a); },
+		TSX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.s); },
 		LDA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.read(addr)); },
 		LDX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.read(addr)); },
 		LDY: function (cpu, addr) { set_nz(cpu, cpu.y = cpu.read(addr)); },
