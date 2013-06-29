@@ -1,6 +1,7 @@
 module.exports = (function(){
 	var r6502 = require("tamago/cpu/6502.js"),
-		disassembler = require("tamago/cpu/disassembler.js");
+		disassembler = require("tamago/cpu/disassembler.js"),
+		ports = require("tamago/data/ports.js");
 
 	function system() {
 		this._readbank = new Array(0x100)
@@ -47,48 +48,6 @@ module.exports = (function(){
 		}
 	}
 
-	system.prototype.trace = function () {
-		var op = disassembler.disassemble(1, this.pc, this)[0];
-
-		var addr = "$" + (op.data || 0).toString(16);
-
-		switch (op.mode) {
-			case "implied":
-				addr = "";
-				break ;
-			case "accumulator": 
-				addr = "A";
-				break ;
-			case "relative": 
-				addr = "$" + op.location.toString(16);
-				break ;
-			case "immediate": 
-			case "absolute": 
-			case "zeropage": 
-				break ;
-			case "zeropageX": 
-			case "absoluteX": 
-				addr += ", X";
-				break ;
-			case "zeropageY": 
-			case "absoluteY": 
-				addr += ", Y";
-				break ;
-			case "indirect": 
-				addr = "(" + addr + ")";
-				break ;
-			case "indirectX": 
-				addr = "(" + addr + ", X)";
-				break ;
-			case "indirectY": 
-				addr = "(" + addr + "), Y";
-				break ;
-		}
-
-		// TODO: BITS AND JUNK
-		console.log(op.instruction, addr);
-	}
-
 	system.prototype.init = function () {
 		var i, data;
 
@@ -128,16 +87,28 @@ module.exports = (function(){
 	}
 
 	system.prototype.reg_read = function (reg) {
-		// TODO
+		switch (reg) {
+		case 0x00:
+			break ;
+		default:
+			console.log("Unhandled register read (" + (0x3000+reg).toString(16) + ")", "  ", ports[reg|0x3000] || "---");
+		}
+
 		return this._cpureg[reg];
 	};
+
+
+	function pad(s, l) {
+		return "00000000".substr(0, l).substr(s.length) + s;
+	}
 
 	system.prototype.reg_write = function (reg, data) {
 		switch (reg) {
 		case 0x00: // P_CPU_Bank_Ctrl
 			this.set_rom_page(data);
 			break ;
-			// TODO: Additional registers
+		default:
+			console.log("Unhandled register write (" + (0x3000+reg).toString(16) + ")", pad(data.toString(16),2), "-", pad(data.toString(2), 8), "  ", ports[reg|0x3000] || "---");
 		}
 		this._cpureg[reg] = data;
 	};
@@ -188,6 +159,48 @@ module.exports = (function(){
 		this._readbank[bank] = read;
 		this._writebank[bank] = nullwrite;
 	};
+
+	system.prototype.trace = function () {
+		var op = disassembler.disassemble(1, this.pc, this)[0];
+
+		var addr = "$" + (op.data || 0).toString(16);
+
+		switch (op.mode) {
+			case "implied":
+				addr = "";
+				break ;
+			case "accumulator": 
+				addr = "A";
+				break ;
+			case "relative": 
+				addr = "$" + op.location.toString(16);
+				break ;
+			case "immediate": 
+			case "absolute": 
+			case "zeropage": 
+				break ;
+			case "zeropageX": 
+			case "absoluteX": 
+				addr += ", X";
+				break ;
+			case "zeropageY": 
+			case "absoluteY": 
+				addr += ", Y";
+				break ;
+			case "indirect": 
+				addr = "(" + addr + ")";
+				break ;
+			case "indirectX": 
+				addr = "(" + addr + ", X)";
+				break ;
+			case "indirectY": 
+				addr = "(" + addr + "), Y";
+				break ;
+		}
+
+		// TODO: BITS AND JUNK
+		console.log(op.instruction, addr);
+	}
 
 	return {
 		system: system

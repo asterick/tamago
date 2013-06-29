@@ -104,10 +104,28 @@ module.exports = (function(){
 			set_nz(cpu, cpu.y = (cpu.y + 1) & 0xFF);
 		},
 		ADC: function (cpu, addr) {
-			throw new Error("UNIMPLEMENTED");
+			if (cpu.d) {
+				throw new Error("UNIMPLEMENTED");
+			} else {
+				var data = cpu.read(addr),
+					o = data + cpu.a + (cpu.c ? 1 : 0);
+
+				cpu.v = ~(cpu.a ^ data) & (o ^ data) & 0x80;				
+				cpu.c = o & ~0xFF;
+				set_nz(cpu, cpu.a = o & 0xFF);
+			}
 		},
 		SBC: function (cpu, addr) {
-			throw new Error("UNIMPLEMENTED");
+			if (cpu.d) {
+				throw new Error("UNIMPLEMENTED");
+			} else {
+				var data = cpu.read(addr),
+					o = data - cpu.a - (cpu.c ? 0 : 1);
+
+				cpu.v = (cpu.a ^ data) & (o ^ data) & 0x80;				
+				cpu.c = o & ~0xFF;
+				set_nz(cpu, cpu.a = o & 0xFF);
+			}
 		},
 		CMP: function (cpu, addr) {
 			var data = cpu.a - cpu.read(addr);
