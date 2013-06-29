@@ -1,13 +1,15 @@
-var config = require ("tamago/config.js"),
-	tamagotchi = require("tamago/cpu/tamagotchi.js"),
-	disassemble = require("tamago/disassembler.js"),
-	
-	object = require("util/object.js"),
-	ejs = require("util/ejs.js"),
-	template = requireText("tamago/templates/main.html");
-
 module.exports = (function() {
-	var instructions;
+	var config = require ("tamago/config.js"),
+		tamagotchi = require("tamago/cpu/tamagotchi.js"),
+		disassemble = require("tamago/cpu/disassembler.js"),
+		
+		object = require("util/object.js"),
+		ejs = require("util/ejs.js"),
+		template = requireText("tamago/templates/main.html");
+
+	ready(function () {
+		template = ejs.parse(template);
+	})
 
 	function Tamago(element) {
 		this.configure(element);
@@ -122,12 +124,11 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.configure = function(element) {
-		var data = Object.create(config),
-			tmpl = ejs.parse(template);
+		var data = Object.create(config);
 
 		data.debug = Boolean(element.attributes.debugger);
 
-		element.innerHTML = tmpl(data);
+		element.innerHTML = template(data);
 
 		// Bind to HTML
 		if (data.debug) {

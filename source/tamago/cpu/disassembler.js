@@ -1,8 +1,8 @@
-var instructions = require("tamago/data/instructions.js"),
-	ports = require("tamago/data/ports.js"),
-	config = require("tamago/config.js");
-
 module.exports = (function(){
+	var instructions = require("tamago/data/instructions.js"),
+		ports = require("tamago/data/ports.js"),
+		config = require("tamago/config.js");
+	
 	function disassemble(count, address, cpu) {
 		var i = [];
 

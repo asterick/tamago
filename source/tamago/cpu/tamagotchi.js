@@ -1,6 +1,6 @@
-var r6502 = require("tamago/cpu/6502.js");
-
 module.exports = (function(){
+	var r6502 = require("tamago/cpu/6502.js");
+
 	function system() {
 		this._readbank = new Array(0x100)
 		this._writebank = new Array(0x100)
