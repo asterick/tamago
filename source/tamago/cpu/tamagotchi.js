@@ -23,7 +23,7 @@ module.exports = (function(){
 
 	system.prototype = Object.create(r6502);
 
-	system.prototype.CLOCK_RATE = 200;//32768;
+	system.prototype.CLOCK_RATE = 32768;
 	system.prototype.MAX_ADVANCE = 1;
 
 	system.prototype.step_realtime = function () {
@@ -73,7 +73,7 @@ module.exports = (function(){
 		var offset = 0x8000 * (bank % 20);
 
 		for (var i = 0; i < 0x80; i ++) {
-			this.rom(i + 0x40, new Uint8Array(this.bios, offset + i<< 8, 0x100));
+			this.rom(i + 0x40, new Uint8Array(this.bios, offset + (i << 8), 0x100));
 		}
 	}
 
