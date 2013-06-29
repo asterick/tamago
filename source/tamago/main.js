@@ -17,6 +17,7 @@ module.exports = (function() {
 		this.system = new tamagotchi.system();
 		this._pixeldata = this.body.display.getImageData(0,0,64,32),
 		this._pixels = new Uint32Array(this._pixeldata.data.buffer)
+		this._disasmOffset = 0;
 
 		this.refresh();
 	}
@@ -67,23 +68,36 @@ module.exports = (function() {
 	Tamago.prototype.refresh_debugger = function () {
 		var that = this;
 
-		var disasm = disassemble.disassemble(config.instructionCount, this.system.pc, this.system);
-
+		// Update basic views
 		object.each(this.body.registers, function (elem, register) {
 			elem.innerHTML = config.toHex(2, that.system[register]);
-		})
+		});
 
 		object.each(this.body.flags, function (elem, flag) {
 			elem.classList.toggle("active", Boolean(that.system[flag]));
-		})
+		});
 
 		this.body.memory.forEach(function (m, i) {
 			m.innerHTML = config.toHex(2, that.system._wram[i]);
-		})
+		});
 
 		this.body.control.forEach(function (m, i) {
 			m.innerHTML = config.toHex(2, that.system._cpureg[i]);
-		})
+		});
+
+
+		var disasm = disassemble.disassemble(config.instructionCount, this._disasmOffset, this.system),
+			bias = config.instructionCount / 2,
+			current = disasm.reduce(function(acc, d, i){ return d.active ? i : acc; }, null);
+
+		// PC isn't were it should be
+		if (current === null) {
+			this._disasmOffset = this.system.pc;
+			disasm = disassemble.disassemble(config.instructionCount, this._disasmOffset, this.system);
+		} else if (current >= bias && disasm.length == config.instructionCount) {
+			this._disasmOffset = disasm[current-bias].location;
+			disasm = disassemble.disassemble(config.instructionCount, this._disasmOffset, this.system);
+		}
 
 		disasm.forEach(function (g, i) {
 			var row = that.body.instructions[i];

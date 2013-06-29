@@ -16,10 +16,11 @@ module.exports = (function(){
 
 	system.prototype = Object.create(r6502);
 	system.prototype.CLOCK_RATE = 32768;
+	system.prototype.MAX_ADVANCE = 1;	// Never go more than a second
 
 	system.prototype.step_frame = function () {
-		var t = + new Date(),
-			d = this.previous_clock - t,
+		var t = +new Date() / 1000,
+			d = Math.min(this.MAX_ADVANCE, this.previous_clock - t),
 			a = this.cycles_error + (this.CLOCK_RATE * d),
 			o = Math.floor(a);
 
@@ -27,8 +28,6 @@ module.exports = (function(){
 		this.cycles += o;
 		this.cycles_error = a - o;
 		
-		for (var i = 0; i < this._dram.length; i++) {this._dram[i] = Math.random() * 0x100; }
-
 		while(this.cycles > 0) { this.step(); }
 	}
 
