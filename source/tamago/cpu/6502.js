@@ -20,7 +20,7 @@ module.exports = (function(){
 			ops[code] = {
 				operation: operations[op.instruction],
 				address: addressing[op.addressing],
-				cycles: op.cycles || 1 // TODO: ACTUALLY MAKE THIS ACCURATE
+				cycles: op.cycles
 			};
 		});
 	}

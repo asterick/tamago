@@ -16,6 +16,11 @@ tamago[debugger] {
 		display: inline-block;
 	}
 
+	buttons {
+		display: block;
+		text-align: center;
+	}
+
 	display {
 		text-align: center;
 		display: block;
@@ -134,8 +139,8 @@ tamago[debugger] {
 					&:before { content: "$"; }
 				}
 
-				&[mode=indirect]:before, &[mode=indirectX], &[mode=indirectY] {
-					content: "("
+				&[mode=indirect], &[mode=indirectX], &[mode=indirectY] {
+					&::before { content: "(" }
 				}
 				&[mode=indirect]:after {
 					content: ")"

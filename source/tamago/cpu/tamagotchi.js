@@ -9,18 +9,26 @@ module.exports = (function(){
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
 
+		function random(a) { for (var i = a.length-1; i >= 0; i--) a[i] = Math.random()*0x100; }
+		random(this._dram);
+		random(this._wram);
+
 		// Configure and reset
 		this.init();
 		this.reset();
+
+		this.cycles_error = 0;
+		this.previous_clock = 0;
 	}
 
 	system.prototype = Object.create(r6502);
-	system.prototype.CLOCK_RATE = 32768;
-	system.prototype.MAX_ADVANCE = 1;	// Never go more than a second
 
-	system.prototype.step_frame = function () {
+	system.prototype.CLOCK_RATE = 100;//32768;
+	system.prototype.MAX_ADVANCE = 1;
+
+	system.prototype.step_realtime = function () {
 		var t = +new Date() / 1000,
-			d = Math.min(this.MAX_ADVANCE, this.previous_clock - t),
+			d = Math.min(this.MAX_ADVANCE, t - this.previous_clock) || 0,
 			a = this.cycles_error + (this.CLOCK_RATE * d),
 			o = Math.floor(a);
 

@@ -35,7 +35,7 @@ module.exports = (function() {
 		var that = this;
 
 		function frame() {
-			that.system.step_frame();
+			that.system.step_realtime();
 			that.refresh();
 
 			if (that.running) {
