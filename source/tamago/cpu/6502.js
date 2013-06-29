@@ -1,4 +1,8 @@
 module.exports = (function(){
+	var addressing = require("tamago/cpu/address.js"),
+		operations = require("tamago/cpu/operations.js"),
+		instructions = require("tamago/data/instructions.js");
+
 	var r6502 = {};
 
 	r6502.reset = function () {
@@ -14,6 +18,19 @@ module.exports = (function(){
 	r6502.step = function () {
 		// TODO!
 		this.cycles--;
+	}
+
+	r6502.next = function () {
+		var d = this.read(this.pc);
+		this.pc &= 0xFFFF;
+		return d;
+	}
+
+	r6502.next_16 = function () {
+		var l = this.next(),
+			h = this.next();
+
+		return l | (h << 8);
 	}
 
 	r6502.read_16 = function (addr) {
@@ -40,7 +57,6 @@ module.exports = (function(){
 				((this.z) ? 0x02: 0) |
 				((this.i) ? 0x04: 0) |
 				((this.d) ? 0x08: 0) |
-				((this.b) ? 0x10: 0) |
 				((this.v) ? 0x40: 0) |
 				((this.n) ? 0x80: 0);
 		},
@@ -49,7 +65,6 @@ module.exports = (function(){
 			this.z = v & 0x02;
 			this.i = v & 0x04;
 			this.d = v & 0x08;
-			this.b = v & 0x10;
 			this.v = v & 0x40;
 			this.n = v & 0x80;
 		}

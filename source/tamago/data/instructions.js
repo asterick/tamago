@@ -92,7 +92,7 @@ module.exports = {
         addressing: "zeropage"
     },
     40: {
-        instruction: "PHP",
+        instruction: "PLP",
         addressing: "implied"
     },
     41: {
@@ -308,7 +308,7 @@ module.exports = {
         addressing: "zeropage"
     },
     136: {
-        instruction: "DEC",
+        instruction: "DEY",
         addressing: "implied"
     },
     138: {
@@ -484,7 +484,7 @@ module.exports = {
         addressing: "immediate"
     },
     202: {
-        instruction: "DEC",
+        instruction: "DEX",
         addressing: "implied"
     },
     204: {

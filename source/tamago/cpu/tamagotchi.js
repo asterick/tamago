@@ -85,6 +85,11 @@ module.exports = (function(){
 	};
 
 	system.prototype.read = function(addr) {
+		// A addressing
+		if (addr === null) {
+			return this.a;
+		}
+
 		var bank = addr >> 8,
 			byte = addr & 0xFF;
 
@@ -92,6 +97,11 @@ module.exports = (function(){
 	};
 
 	system.prototype.write = function (addr, data) {
+		if (addr === null) {
+			this.a = data; 
+			return ;
+		}
+
 		var bank = addr >> 8,
 			byte = addr & 0xFF;
 
