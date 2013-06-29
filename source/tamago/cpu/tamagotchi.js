@@ -96,7 +96,7 @@ module.exports = (function(){
 		case 0x00:
 			break ;
 		default:
-			console.log("Unhandled register read  (" + (0x3000+reg).toString(16) + ")", "  ", ports[reg|0x3000] || "---");
+			console.log("Unhandled register read  (" + (0x3000+reg).toString(16) + ")", "             ", ports[reg|0x3000] || "---");
 		}
 
 		return this._cpureg[reg];
@@ -113,7 +113,7 @@ module.exports = (function(){
 			this.set_rom_page(data);
 			break ;
 		default:
-			console.log("Unhandled register write (" + (0x3000+reg).toString(16) + ")", pad(data.toString(16),2), "-", pad(data.toString(2), 8), "  ", ports[reg|0x3000] || "---");
+			console.log("Unhandled register write (" + (0x3000+reg).toString(16) + ")", pad(data.toString(16),2), "-", pad(data.toString(2), 8), ports[reg|0x3000] || "---");
 		}
 		this._cpureg[reg] = data;
 	};
