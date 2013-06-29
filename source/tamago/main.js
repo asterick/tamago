@@ -27,6 +27,7 @@ module.exports = (function() {
 	Tamago.prototype.palette = [0xFFFFFFFF,0xFFAAAAAA,0xFF555555,0xFF000000];
 
 	Tamago.prototype.step = function (e) {
+		if (this.body.trace.checked) this.system.trace();
 		this.system.step();
 		this.refresh();
 	}
@@ -35,7 +36,7 @@ module.exports = (function() {
 		var that = this;
 
 		function frame() {
-			that.system.step_realtime();
+			that.system.step_realtime(that.body.trace.checked);
 			that.refresh();
 
 			if (that.running) {
@@ -118,7 +119,7 @@ module.exports = (function() {
 
 			row.instruction.classList.toggle("active", g.active === true);
 			attr(row.addressing, 'mode', g.mode);
-			attr(row.addressing, 'address', g.address);
+			attr(row.addressing, 'address', (g.address || 0).toString(16).toUpperCase());
 			attr(row.instruction, 'port', g.port);
 		});
 
@@ -141,6 +142,7 @@ module.exports = (function() {
 			});
 
 			this.body = {
+				trace: element.querySelector("input[type=checkbox]"),
 				flags: [].reduce.call(element.querySelectorAll("flag"), function (acc, f) { 
 					acc[f.attributes.name.value.toLowerCase()] = f;
 					return acc; 

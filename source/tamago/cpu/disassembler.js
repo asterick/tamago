@@ -137,7 +137,7 @@ module.exports = (function(){
 				d = r8();
 				output = {
 					instruction: op.instruction,
-					address: (d + cpu.pc) & 0xFFFF,
+					address: (d + address) & 0xFFFF,
 					data: (d & 0x80) ? (d - 0x100) : d
 				};
 				break ;

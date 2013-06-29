@@ -1,5 +1,6 @@
 module.exports = (function(){
-	var r6502 = require("tamago/cpu/6502.js");
+	var r6502 = require("tamago/cpu/6502.js"),
+		disassembler = require("tamago/cpu/disassembler.js");
 
 	function system() {
 		this._readbank = new Array(0x100)
@@ -26,7 +27,7 @@ module.exports = (function(){
 	system.prototype.CLOCK_RATE = 32768;
 	system.prototype.MAX_ADVANCE = 1;
 
-	system.prototype.step_realtime = function () {
+	system.prototype.step_realtime = function (trace) {
 		var t = +new Date() / 1000,
 			d = Math.min(this.MAX_ADVANCE, t - this.previous_clock) || 0,
 			a = this.cycles_error + (this.CLOCK_RATE * d),
@@ -36,7 +37,56 @@ module.exports = (function(){
 		this.cycles += o;
 		this.cycles_error = a - o;
 		
-		while(this.cycles > 0) { this.step(); }
+		if (trace) {
+			while(this.cycles > 0) { 
+				this.trace();
+				this.step();
+			}
+		} else {
+			while(this.cycles > 0) { this.step(); }
+		}
+	}
+
+	system.prototype.trace = function () {
+		var op = disassembler.disassemble(1, this.pc, this)[0];
+
+		var addr = "$" + (op.data || 0).toString(16);
+
+		switch (op.mode) {
+			case "implied":
+				addr = "";
+				break ;
+			case "accumulator": 
+				addr = "A";
+				break ;
+			case "relative": 
+				addr = "$" + op.location.toString(16);
+				break ;
+			case "immediate": 
+			case "absolute": 
+			case "zeropage": 
+				break ;
+			case "zeropageX": 
+			case "absoluteX": 
+				addr += ", X";
+				break ;
+			case "zeropageY": 
+			case "absoluteY": 
+				addr += ", Y";
+				break ;
+			case "indirect": 
+				addr = "(" + addr + ")";
+				break ;
+			case "indirectX": 
+				addr = "(" + addr + ", X)";
+				break ;
+			case "indirectY": 
+				addr = "(" + addr + "), Y";
+				break ;
+		}
+
+		// TODO: BITS AND JUNK
+		console.log(op.instruction, addr);
 	}
 
 	system.prototype.init = function () {

@@ -127,7 +127,7 @@ tamago[debugger] {
 			addressing {
 				color: $blue-2;
 				display: inline-block;
-				width: 14ex;
+				width: 16ex;
 
 				// Prefix immediate values
 				&:before, &:after {
@@ -144,6 +144,10 @@ tamago[debugger] {
 				}
 				&[mode=indirect]:after {
 					content: ")"
+				}
+
+				&[mode=relative]:after {
+					content: " ;" attr(address);
 				}
 
 				&[mode=indirectX]:after {
