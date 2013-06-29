@@ -1,11 +1,15 @@
-Tamago - TamaTown emulator for modern browsers
-==============================================
+Tamago - TamaTown for modern browsers
+=====================================
 
-Installation 
+Requirements
 ------------
- * Download and install node.js and ruby
+ * node.js v10.0.x
+ * ruby 1.9.x
 
- 	gem install sass
+Installation
+------------
+
+	gem install sass
  	npm install -g grunt-cli
  	npm install
 
