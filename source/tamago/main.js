@@ -44,12 +44,14 @@ module.exports = (function() {
 		}
 
 		this.running = !this.running;	
-		e.target.attributes.value.value = this.running ? "stop" : "run";
 		frame();
+
+		e.target.attributes.value.value = this.running ? "stop" : "run";
 	}
 
 	Tamago.prototype.reset = function (e) {
 		this.system.reset();
+		this.refresh();		
 	}
 
 	Tamago.prototype.refresh_simple = function () {

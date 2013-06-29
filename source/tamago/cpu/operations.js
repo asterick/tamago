@@ -103,11 +103,30 @@ module.exports = (function(){
 		INY: function (cpu, addr) {
 			set_nz(cpu, cpu.y = (cpu.y + 1) & 0xFF);
 		},
-		ADC: function (cpu, addr) { /* TODO */ },
-		SBC: function (cpu, addr) { /* TODO */ },
-		CMP: function (cpu, addr) { /* TODO */ },
-		CPX: function (cpu, addr) { /* TODO */ },
-		CPY: function (cpu, addr) { /* TODO */ },
+		ADC: function (cpu, addr) {
+			throw new Error("UNIMPLEMENTED");
+		},
+		SBC: function (cpu, addr) {
+			throw new Error("UNIMPLEMENTED");
+		},
+		CMP: function (cpu, addr) {
+			var data = cpu.a - cpu.read(addr);
+
+			cpu.c = data & ~0xFF;
+			set_nz(cpu, data & 0xFF);
+		},
+		CPX: function (cpu, addr) {
+			var data = cpu.x - cpu.read(addr);
+
+			cpu.c = data & ~0xFF;
+			set_nz(cpu, data & 0xFF);
+		},
+		CPY: function (cpu, addr) {
+			var data = cpu.y - cpu.read(addr);
+
+			cpu.c = data & ~0xFF;
+			set_nz(cpu, data & 0xFF);
+		},
 
 		// Stack Operations
 		PHP: function (cpu, addr) { cpu.push(cpu.p); },

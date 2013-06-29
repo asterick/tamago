@@ -23,7 +23,7 @@ module.exports = (function(){
 
 	system.prototype = Object.create(r6502);
 
-	system.prototype.CLOCK_RATE = 100;//32768;
+	system.prototype.CLOCK_RATE = 200;//32768;
 	system.prototype.MAX_ADVANCE = 1;
 
 	system.prototype.step_realtime = function () {
@@ -44,13 +44,13 @@ module.exports = (function(){
 
 		// Work ram
 		for (i = 0x0000; i < 0x1000; i+=0x0100) {
-			data = new Uint8Array(this._wram, i % this._wram.length, 0x100);
+			data = new Uint8Array(this._wram.buffer, i % this._wram.length, 0x100);
 			this.ram(i>>8, data);
 		}
 
 		// Display memory
 		for (i = 0x1000; i < 0x3000; i+=0x0100) {
-			data = new Uint8Array(this._dram, i % this._dram.length, 0x100);
+			data = new Uint8Array(this._dram.buffer, i % this._dram.length, 0x100);
 			this.ram(i>>8, data);
 		}
 
@@ -121,8 +121,8 @@ module.exports = (function(){
 			return data[reg];
 		}
 
-		function write(reg, data) {
-			data[reg] = data;
+		function write(reg, value) {
+			data[reg] = value;
 		}
 
 		this._readbank[bank] = read;
