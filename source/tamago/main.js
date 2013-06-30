@@ -32,6 +32,11 @@ module.exports = (function() {
 		this.refresh();
 	}
 
+	Tamago.prototype.nmi = function (e) {
+		this.system.nmi();
+		this.refresh();
+	}
+
 	Tamago.prototype.run = function (e) {
 		var that = this;
 

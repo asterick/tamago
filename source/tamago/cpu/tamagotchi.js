@@ -21,6 +21,8 @@ module.exports = (function(){
 
 		this.cycles_error = 0;
 		this.previous_clock = 0;
+
+		this.p = 0xFF;
 	}
 
 	system.prototype = Object.create(r6502);
@@ -45,11 +47,6 @@ module.exports = (function(){
 			}
 		} else {
 			while(this.cycles > 0) { this.step(); }
-		}
-
-		this._g = (this._g || 10) - 1;
-		if (this._g <= 0) {
-			this.nmi();
 		}
 	}
 
@@ -91,21 +88,24 @@ module.exports = (function(){
 		}
 	}
 
+	function pad(s, l) {
+		return "00000000".substr(0, l).substr(s.length) + s;
+	}
+
 	system.prototype.reg_read = function (reg) {
 		switch (reg) {
 		case 0x00:
 			break ;
 		default:
-			console.log("Unhandled register read  (" + (0x3000+reg).toString(16) + ")", "             ", ports[reg|0x3000] || "---");
+			console.log(
+				"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
+				"             ", 
+				ports[reg|0x3000] || "---");
 		}
 
 		return this._cpureg[reg];
 	};
 
-
-	function pad(s, l) {
-		return "00000000".substr(0, l).substr(s.length) + s;
-	}
 
 	system.prototype.reg_write = function (reg, data) {
 		switch (reg) {
@@ -113,7 +113,12 @@ module.exports = (function(){
 			this.set_rom_page(data);
 			break ;
 		default:
-			console.log("Unhandled register write (" + (0x3000+reg).toString(16) + ")", pad(data.toString(16),2), "-", pad(data.toString(2), 8), ports[reg|0x3000] || "---");
+			console.log(
+				"Unhandled register write (" + (0x3000+reg).toString(16) + ")", 
+				pad(data.toString(16),2), 
+				"-", 
+				pad(data.toString(2), 8), 
+				ports[reg|0x3000] || "---");
 		}
 		this._cpureg[reg] = data;
 	};

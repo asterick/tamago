@@ -37,9 +37,10 @@ module.exports = (function(){
 
 		// Bit Operations
 		BIT: function (cpu, addr) {
-			var data = cpu.a & cpu.read(addr);
-			set_nz(cpu, data);
+			var data = cpu.read(addr);
+			cpu.n = data & 0x80;
 			cpu.v = data & 0x40;
+			cpu.z = !(cpu.a & data);
 		},
 		ORA: function (cpu, addr) { set_nz(cpu, cpu.a |= cpu.read(addr)); },
 		EOR: function (cpu, addr) { set_nz(cpu, cpu.a ^= cpu.read(addr)); },

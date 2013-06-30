@@ -99,5 +99,5 @@ module.exports = (function(){
 		}
 	});
 
-	return r6502;
+	return { r6502: r6502 };
 })();
