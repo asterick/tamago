@@ -28,6 +28,7 @@ tamago[debugger] {
 		padding: 20px;
 
 		canvas {
+			border: 2px solid $pink;
 			display: inline-block;
 			background: $light-grey;
 
@@ -221,6 +222,8 @@ tamago[debugger] {
 				min-width: 2ex;
 				padding: 0;
 				margin: 0;
+
+				&.read { background: $green-2; }
 
 				&:nth-child(even) {
 					color: $blue-2;

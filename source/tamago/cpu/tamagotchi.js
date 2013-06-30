@@ -3,15 +3,19 @@ module.exports = (function(){
 		disassembler = require("tamago/cpu/disassembler.js"),
 		ports = require("tamago/data/ports.js");
 
+	var ACCESS_READ		= 0x01,
+		ACCESS_WRITE	= 0x02;
+
 	function system() {
 		this._readbank = new Array(0x100)
 		this._writebank = new Array(0x100)
 
 		this._cpureg = new Uint8Array(0x100);	// Control registers
+		this._cpuacc = new Uint8Array(0x10000);	// Control registers
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
 
-		function random(a) { for (var i = a.length-1; i >= 0; i--) a[i] = Math.random()*0x100; }
+		function random(a) { for (var i = a.length-1; i >= 0; i--) a[i] = 0xCB; }
 		random(this._dram);
 		random(this._wram);
 
@@ -147,6 +151,8 @@ module.exports = (function(){
 				return this.a;
 			}
 
+			this._cpuacc[addr] |= ACCESS_READ;
+
 			var bank = addr >> 8,
 				byte = addr & 0xFF;
 
@@ -158,6 +164,8 @@ module.exports = (function(){
 				this.a = data; 
 				return ;
 			}
+
+			this._cpuacc[addr] |= ACCESS_WRITE;
 
 			var bank = addr >> 8,
 				byte = addr & 0xFF;
@@ -232,6 +240,8 @@ module.exports = (function(){
 	});
 
 	return {
+		ACCESS_WRITE: ACCESS_WRITE,
+		ACCESS_READ: ACCESS_READ,
 		system: system
 	};
 })();
