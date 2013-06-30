@@ -81,8 +81,7 @@ module.exports = (function(){
 
 	Object.defineProperty(r6502, "p", {
 		get: function () {
-			return 
-				((this.c) ? 0x01: 0) |
+			return ((this.c) ? 0x01: 0) |
 				((this.z) ? 0x02: 0) |
 				((this.i) ? 0x04: 0) |
 				((this.d) ? 0x08: 0) |
