@@ -13,7 +13,7 @@ $3014	P_PortB_Config
 $3015	P_PortB_Dir
 $3016	P_PortB_Data
 $3030
-$3031
+$3031	Timer Control?
 $3032	Timer Output?
 $3033	Timer Output?
 $3034	Timer Output?

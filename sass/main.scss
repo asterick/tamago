@@ -40,6 +40,7 @@ tamago[debugger] {
 		display: block;
 
 		registers {
+			width: 28ex;
 			display: block;
 			padding: $padding-wide;
 
@@ -49,7 +50,7 @@ tamago[debugger] {
 			}
 
 			register {
-				display: block;
+				display: inline-block;
 
 				&:before {
 					display: inline-block;

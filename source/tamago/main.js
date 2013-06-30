@@ -32,6 +32,12 @@ module.exports = (function() {
 		this.refresh();
 	}
 
+	Tamago.prototype.irq = function (e) {
+		this.system.map_irq(parseInt(this.body.selects.irq.value,10));
+		this.system.irq();
+		this.refresh();
+	}
+
 	Tamago.prototype.nmi = function (e) {
 		this.system.nmi();
 		this.refresh();
@@ -128,7 +134,15 @@ module.exports = (function() {
 			attr(row.instruction, 'port', g.port);
 		});
 
-		// TODO: CLEAR UNUSED LINES
+		for (var i = disasm.length; i < config.instructionCount; i++) {
+			var row = that.body.instructions[i];
+
+			row.location.innerHTML = "";
+			row.opcode.innerHTML = "";
+			row.addressing.innerHTML = "";
+			row.data.innerHTML = "";
+			row.addressing.removeAttribute('mode');
+		}
 
 		this.refresh_simple();
 	}
@@ -149,6 +163,10 @@ module.exports = (function() {
 			});
 
 			this.body = {
+				selects: [].reduce.call(element.querySelectorAll("select"), function (acc, f) { 
+					acc[f.attributes.action.value.toLowerCase()] = f;
+					return acc; 
+				}, {}),
 				trace: element.querySelector("input[type=checkbox]"),
 				flags: [].reduce.call(element.querySelectorAll("flag"), function (acc, f) { 
 					acc[f.attributes.name.value.toLowerCase()] = f;

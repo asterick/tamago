@@ -170,12 +170,8 @@ module.exports = (function(){
 			cpu.pc |= cpu.pull() << 8;
 		},
 		BRK: function (cpu, addr) {
-			cpu.push(cpu.pc >> 8);
-			cpu.push(cpu.pc & 0xFF);
-			cpu.push(cpu.p | 0x10); // Push program status 'B' set
-			
-			// THIS WILL CRASH UNLESS OVERLAY HAPPENS
-			cpu.pc = cpu.read(0xFFFE);
+			// This should probably actually find out which IRQ to service
+			this.irq(true);
 		},
 
 		BNE: function (cpu, addr) { if(!cpu.z) cpu.pc = addr; },

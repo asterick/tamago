@@ -33,12 +33,11 @@ module.exports = (function(){
 		this.pc = this.read_16(0xFFFA);
 	};
 
-	r6502.irq = function () {
+	r6502.irq = function (brk) {
 		this.push(this.pc >> 8);
 		this.push(this.pc & 0xFF);
-		this.push(this.p);
+		this.push(this.p | (brk ? 0x10 : 0));
 
-		// THIS WILL CRASH UNLESS OVERLAY HAPPENS
 		this.pc = this.read_16(0xFFFE);
 	};
 

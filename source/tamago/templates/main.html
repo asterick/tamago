@@ -8,10 +8,22 @@
 			<input type="button" value="step" action="step"></input>
 			<input type="button" value="run" action="run"></input>
 			<input type="button" value="reset" action="reset"></input>
-			<input type="checkbox">trace</input>
+			<input type="button" value="nmi" action="nmi"></input>
 		</buttons>
 		<buttons>
-			<input type="button" value="nmi" action="nmi"></input>
+			<select action="irq">
+				<option value="0">0: TM0</option>
+				<option value="3">3: 2048</option>
+				<option value="4">4: 8192</option>
+				<option value="5">5: SPU</option>
+				<option value="6">6: SPI</option>
+				<option value="7">7: FP</option>
+				<option value="10">10: TIM1</option>
+				<option value="12">12: TBH</option>
+				<option value="13">13: TBL</option>
+			</select>
+			<input action="irq" type="button" value="irq"></input>
+			<input type="checkbox">trace</input>
 		</buttons>
 		<cpu>
 			<flags>
@@ -24,12 +36,11 @@
 			</flags>
 
 			<registers>
-				<register name="S">00</register>
-				<register name="P">00</register>
-				<register name="A">00</register>
-				<register name="X">00</register>
-				<register name="Y">00</register>
-				<register name="PC">0000</register>
+				<register name="A"></register>
+				<register name="X"></register>
+				<register name="Y"></register>
+				<register name="S"></register>
+				<register name="PC"></register>
 			</registers>
 		</cpu>
 		<control>

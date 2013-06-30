@@ -49,6 +49,11 @@ module.exports = (function(){
 			}
 		}
 
+		system.prototype.map_irq = function (i) {
+			var b = new Uint16Array(this.bios, 0x3FC0, 0x20);
+			b[31] = b[i];
+		}
+
 		system.prototype.init = function () {
 			var i, data;
 
@@ -95,6 +100,13 @@ module.exports = (function(){
 			switch (reg) {
 			case 0x00:
 				break ;
+			case 0x10:
+			case 0x11:
+			case 0x12:
+			case 0x14:
+			case 0x15:
+			case 0x16:
+				break ;
 			default:
 				console.log(
 					"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
@@ -110,6 +122,13 @@ module.exports = (function(){
 			switch (reg) {
 			case 0x00: // P_CPU_Bank_Ctrl
 				this.set_rom_page(data);
+				break ;
+			case 0x10:
+			case 0x11:
+			case 0x12:
+			case 0x14:
+			case 0x15:
+			case 0x16:
 				break ;
 			default:
 				console.log(
