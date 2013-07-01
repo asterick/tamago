@@ -187,7 +187,7 @@ module.exports = (function () {
                 o = cpu.a - data - (cpu.c ? 0 : 1);
 
             // All flags are like binary mode
-            cpu.v = (cpu.a ^ data) & (o ^ data) & 0x80;
+            cpu.v = (cpu.a ^ data) & (cpu.a ^ o) & 0x80;
             cpu.c = o & ~0xFF;
             set_nz(cpu, o & 0xFF);
 
