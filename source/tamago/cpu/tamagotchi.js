@@ -1,7 +1,8 @@
 module.exports = (function(){
 	var r6502 = require("tamago/cpu/6502.js"),
 		disassembler = require("tamago/cpu/disassembler.js"),
-		ports = require("tamago/data/ports.js");
+		ports = require("tamago/data/ports.js"),
+		eeprom = require("tamago/cpu/eeprom.js");
 
 	var ACCESS_READ		= 0x01,
 		ACCESS_WRITE	= 0x02;
@@ -14,6 +15,7 @@ module.exports = (function(){
 		this._cpuacc = new Uint8Array(0x10000);	// Control registers
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
+		this._eeprom = new eeprom.eeprom(12);	// new 32kb eeprom
 
 		// Configure and reset
 		this.init();
@@ -105,39 +107,24 @@ module.exports = (function(){
 			return "00000000".substr(0, l).substr(s.length) + s;
 		}
 
-		var last_bit = 0, last_clk = 0,
-			bits = 0, i2c_data = 0;
-
-		function write_i2c(clk, bit) {
-			var clk_d = clk - last_clk, bit_d = bit - last_bit;
-
-			if (!clk_d && !bit_d) { return ; }
-
-			if (clk_d > 0) {
-				bits++;
-				i2c_data = ((i2c_data << 1) | (bit ? 1 : 0)) & 0xFF;
-				if (bits >= 8) { console.log(i2c_data.toString(16)); bits = 0; }
-			} else if (clk) {
-				console.log((bit_d < 0) ? "START" : "STOP", bits);
-				bits = 0;
-			}
-
-			last_clk = clk;
-			last_bit = bit;
-		}
-
 		system.prototype.reg_read = function (reg) {
 			switch (reg) {
-			case 0x00:
+			case 0x00: // P_CPU_Bank_Ctrl
 				break ;
+
 			case 0x10:
 			case 0x11:
 			case 0x12:
 			case 0x13:
 			case 0x14:
-			case 0x15:
-			case 0x16:
+			case 0x15:			
 				break ;
+			case 0x16: // P_PortB_Data
+				var mask = this._cpureg[0x15],
+					input = 
+						(this._eeprom._output ? 1 : 0);
+				
+				return (mask & this._cpureg[0x16]) | (~mask & input);
 			default:
 				console.log(
 					pad(this._cpureg[0].toString(16), 2),
@@ -160,11 +147,11 @@ module.exports = (function(){
 			case 0x11:
 			case 0x12:
 			case 0x13:
-			//case 0x14:
-			//case 0x15:
+			case 0x14:
+			case 0x15:
 				break ;
 			case 0x16: // P_PortB_Data
-				write_i2c(data & 2, data & 1);
+				this._eeprom.update(data&4, data&2, data&1);
 				break ;
 			default:
 				console.log(
@@ -176,6 +163,7 @@ module.exports = (function(){
 					pad(data.toString(2), 8), 
 					ports[reg|0x3000] || "---");
 			}
+
 			this._cpureg[reg] = data;
 		};
 
