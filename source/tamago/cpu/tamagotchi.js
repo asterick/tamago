@@ -8,8 +8,8 @@ module.exports = (function(){
 		ACCESS_WRITE	= 0x02;
 
 	function system() {
-		this._readbank = new Array(0x100)
-		this._writebank = new Array(0x100)
+		this._readbank = new Array(0x10000);
+		this._writebank = new Array(0x10000);
 
 		this._cpureg = new Uint8Array(0x100);	// Control registers
 		this._cpuacc = new Uint8Array(0x10000);	// Control registers
@@ -81,9 +81,9 @@ module.exports = (function(){
 			}
 
 			// CPU registers
-			for (i = 0x3000; i < 0x4000; i+=0x0100) {
-				this._readbank[i>>8] = this.reg_read.bind(this);
-				this._writebank[i>>8] = this.reg_write.bind(this);
+			for (i = 0x3000; i < 0x4000; i++) {
+				this._readbank[i] = this.reg_read.bind(this);
+				this._writebank[i] = this.reg_write.bind(this);
 			}
 
 			// Static rom
@@ -177,10 +177,7 @@ module.exports = (function(){
 
 			this._cpuacc[addr] |= ACCESS_READ;
 
-			var bank = addr >> 8,
-				byte = addr & 0xFF;
-
-			return this._readbank[bank](byte);
+			return this._readbank[addr](addr & 0xFF);
 		};
 
 		system.prototype.write = function (addr, data) {
@@ -191,10 +188,7 @@ module.exports = (function(){
 
 			this._cpuacc[addr] |= ACCESS_WRITE;
 
-			var bank = addr >> 8,
-				byte = addr & 0xFF;
-
-			return this._writebank[bank](byte, data);
+			return this._writebank[addr](addr & 0xFF, data);
 		};
 
 		system.prototype.ram = function (bank, data) {
@@ -206,8 +200,11 @@ module.exports = (function(){
 				data[reg] = value;
 			}
 
-			this._readbank[bank] = read;
-			this._writebank[bank] = write;
+			bank <<= 8;
+			for (var i = 0; i < 0x100; i++) {
+				this._readbank[bank+i] = read;
+				this._writebank[bank+i] = write;
+			}
 		};
 
 		system.prototype.rom = function (bank, data) {
@@ -216,8 +213,11 @@ module.exports = (function(){
 				return data[addr];
 			}
 
-			this._readbank[bank] = read;
-			this._writebank[bank] = nullwrite;
+			bank <<= 8;
+			for (var i = 0; i < 0x100; i++) {
+				this._readbank[bank+i] = read;
+				this._writebank[bank+i] = nullwrite;
+			}
 		};
 
 		system.prototype.trace = function () {
