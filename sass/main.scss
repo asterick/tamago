@@ -223,14 +223,16 @@ tamago[debugger] {
 				padding: 0;
 				margin: 0;
 
-				&.read { background: $green-2; }
-
 				&:nth-child(even) {
 					color: $blue-2;
 				}
 				&:nth-child(odd) {
 					color: $blue;
 				}
+
+				&.read { background: $red-2; color: $white; }
+				&.write { background: $green-2; color: $white; }
+				&.read.write { background: $yellow-2; color: $white; }
 			}
 		}
 	}

@@ -105,27 +105,51 @@ module.exports = (function(){
 			set_nz(cpu, cpu.y = (cpu.y + 1) & 0xFF);
 		},
 		ADC: function (cpu, addr) {
-			if (cpu.d) {
-				throw new Error("UNIMPLEMENTED");
-			} else {
-				var data = cpu.read(addr),
-					o = data + cpu.a + (cpu.c ? 1 : 0);
+			var data = cpu.read(addr),
+				o = data + cpu.a + (cpu.c ? 1 : 0);
 
+			if (cpu.d) {
+				var al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
+					ah = (cpu.a & 0xF0) + (data & 0xF0);
+
+				// These are not affected by decimal mode
+				cpu.v = ~(cpu.a ^ data) & (o ^ data) & 0x80;				
+				cpu.n = o & 0x80;
+
+				// Decimal mode fixup
+				if (al > 0x09) { al += 0x06; }
+				if (ah > 0x90) { ah += 0x60; }
+				
+				// Result is the sum of the nibbles, combine and set flags
+				o = al + ah;
+				cpu.c = o & ~0xFF;
+				cpu.z = !(cpu.a = o & 0xFF);
+			} else {
 				cpu.v = ~(cpu.a ^ data) & (o ^ data) & 0x80;				
 				cpu.c = o & ~0xFF;
 				set_nz(cpu, cpu.a = o & 0xFF);
 			}
 		},
 		SBC: function (cpu, addr) {
-			if (cpu.d) {
-				throw new Error("UNIMPLEMENTED");
-			} else {
-				var data = cpu.read(addr),
-					o = data - cpu.a - (cpu.c ? 0 : 1);
+			var data = cpu.read(addr),
+				o = data - cpu.a - (cpu.c ? 0 : 1);
 
-				cpu.v = (cpu.a ^ data) & (o ^ data) & 0x80;				
-				cpu.c = o & ~0xFF;
-				set_nz(cpu, cpu.a = o & 0xFF);
+			// All flags are like binary mode
+			cpu.v = (cpu.a ^ data) & (o ^ data) & 0x80;				
+			cpu.c = o & ~0xFF;
+			set_nz(cpu, o & 0xFF);
+
+			if (cpu.d) {
+				// Calculate fix up decimal mode
+				var al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 1 : 0),
+					ah = (cpu.a & 0xF0) - (data & 0xF0);
+
+				if (al < 0x00) { al -= 0x06; }
+				if (ah < 0x00) { ah -= 0x60; }
+
+				cpu.a = (al + ah) & 0xFF;
+			} else {
+				cpu.a = o & 0xFF;
 			}
 		},
 		CMP: function (cpu, addr) {

@@ -98,7 +98,7 @@ module.exports = (function() {
 		});
 
 		this.body.control.forEach(function (m, i) {
-			var acc = that.system._cpuacc[i];
+			var acc = that.system._cpuacc[i+0x3000];
 			m.classList.toggle('read', acc & tamagotchi.ACCESS_READ);
 			m.classList.toggle('write', acc & tamagotchi.ACCESS_WRITE);
 			m.innerHTML = config.toHex(2, that.system._cpureg[i]);
