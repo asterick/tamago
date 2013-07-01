@@ -46,11 +46,12 @@ module.exports = (function() {
 	}
 
 	function Tamago(element) {
-		this.configure(element);
-
 		var u8 = new Uint8Array(this.bios);
 
 		this.system = new tamagotchi.system();
+
+		this.configure(element);
+
 		this._pixeldata = this.body.display.getImageData(0,0,64,32),
 		this._pixels = new Uint32Array(this._pixeldata.data.buffer)
 		this._disasmOffset = 0;
@@ -191,6 +192,9 @@ module.exports = (function() {
 
 	Tamago.prototype.configure = function(element) {
 		var data = Object.create(config);
+
+		data.ramBytes = this.system._wram.length;
+		data.registerBytes = this.system._cpureg.length;
 
 		data.debug = Boolean(element.attributes.debugger);
 

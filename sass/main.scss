@@ -139,7 +139,11 @@ tamago[debugger] {
 					display: inline;
 				}
 
-				&[mode=immediate], &[mode=absolute], &[mode=absoluteX], &[mode=absoluteY], &[mode=zeropage], &[mode=zeropageX], &[mode=zeropageY] {
+				&[mode=immediate] {
+					&:before { content: "#$"; }
+				}
+
+				&[mode=absolute], &[mode=absoluteX], &[mode=absoluteY], &[mode=zeropage], &[mode=zeropageX], &[mode=zeropageY] {
 					&:before { content: "$"; }
 				}
 

@@ -21,15 +21,14 @@ module.exports = (function(){
 
 		this.cycles_error = 0;
 		this.previous_clock = 0;
-
-		this.pc = 0x1000; // JUMP TO ENTRY
 	}
 
 	ready(function() {
 		system.prototype = Object.create(r6502.r6502);	
 
-		system.prototype.CLOCK_RATE = 100;
+		system.prototype.CLOCK_RATE = 10000;
 		system.prototype.MAX_ADVANCE = 1;
+
 		system.prototype.LCD_ORDER = [
 			0x068, 0x0C0, 0x0CC, 0x0D8,
 			0x0E4, 0x0F0, 0x1FC, 0x108,
@@ -39,6 +38,11 @@ module.exports = (function(){
 			0x090, 0x084, 0x078, 0x06C,
 			0x060, 0x054, 0x048, 0x03C,
 			0x030, 0x024, 0x018];
+
+		system.prototype.reset = function () {
+			r6502.r6502.reset.call(this);
+			this.pc = 0x1000;
+		}
 
 		system.prototype.step_realtime = function (trace) {
 			var t = +new Date() / 1000,

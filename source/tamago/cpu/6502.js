@@ -84,6 +84,7 @@ module.exports = (function(){
 				((this.z) ? 0x02: 0) |
 				((this.i) ? 0x04: 0) |
 				((this.d) ? 0x08: 0) |
+				0x20 | // Always set
 				((this.v) ? 0x40: 0) |
 				((this.n) ? 0x80: 0);
 		},

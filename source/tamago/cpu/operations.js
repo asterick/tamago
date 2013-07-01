@@ -217,7 +217,7 @@ module.exports = (function () {
 
         // Stack Operations
         PHP: function (cpu, addr) {
-            cpu.push(cpu.p);
+            cpu.push(cpu.p | 0x10);
         },
         PHA: function (cpu, addr) {
             cpu.push(cpu.a);
