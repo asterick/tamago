@@ -72,7 +72,7 @@ module.exports = (function () {
             cpu.write(addr, cpu.y);
         },
 
-        // Bit Operations
+        // Bit Operations (verified)
         BIT: function (cpu, addr) {
             var data = cpu.read(addr);
             cpu.n = data & 0x80;
@@ -209,22 +209,22 @@ module.exports = (function () {
             }
         },
         CMP: function (cpu, addr) {
-            var data = cpu.a - cpu.read(addr);
+            var data = cpu.read(addr);
 
-            cpu.c = data & ~0xFF;
-            set_nz(cpu, data & 0xFF);
+            cpu.c = cpu.a >= data;
+            set_nz(cpu, (cpu.a - data) & 0xFF);
         },
         CPX: function (cpu, addr) {
-            var data = cpu.x - cpu.read(addr);
+            var data = cpu.read(addr);
 
-            cpu.c = data & ~0xFF;
-            set_nz(cpu, data & 0xFF);
+            cpu.c = cpu.x >= data;
+            set_nz(cpu, (cpu.x - data) & 0xFF);
         },
         CPY: function (cpu, addr) {
-            var data = cpu.y - cpu.read(addr);
+            var data = cpu.read(addr);
 
-            cpu.c = data & ~0xFF;
-            set_nz(cpu, data & 0xFF);
+            cpu.c = cpu.y >= data;
+            set_nz(cpu, (cpu.y - data) & 0xFF);
         },
 
         // Stack Operations
@@ -241,7 +241,7 @@ module.exports = (function () {
             cpu.p = cpu.pull();
         },
 
-        // Interrupts / Branch
+        // Interrupts / Branch (verified)
         JMP: function (cpu, addr) {
             cpu.pc = addr;
         },
@@ -261,7 +261,7 @@ module.exports = (function () {
         },
         BRK: function (cpu, addr) {
             // This should probably actually find out which IRQ to service
-            this.irq(true);
+            cpu.irq(true);
         },
 
         BNE: function (cpu, addr) {
