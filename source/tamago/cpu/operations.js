@@ -9,10 +9,10 @@ module.exports = (function(){
 	}
 
 	return {
-		// Other
+		// Other(verified)
 		NOP: function (cpu, addr) {},
 
-		// Flags
+		// Flags(verified)
 		CLC: function (cpu, addr) { cpu.c = 0; },
 		CLI: function (cpu, addr) { cpu.i = 0; },
 		CLV: function (cpu, addr) { cpu.v = 0; },
@@ -21,12 +21,12 @@ module.exports = (function(){
 		SED: function (cpu, addr) { cpu.d = 1; },
 		SEI: function (cpu, addr) { cpu.i = 1; },
 
-		// Transfer
+		// Transfer (verified)
 		TXA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.x); },
 		TYA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.y); },
-		TXS: function (cpu, addr) { set_nz(cpu, cpu.s = cpu.x); },
-		TAY: function (cpu, addr) { set_nz(cpu, cpu.y = cpu.a); },
+		TXS: function (cpu, addr) { cpu.s = cpu.x; },
 		TAX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.a); },
+		TAY: function (cpu, addr) { set_nz(cpu, cpu.y = cpu.a); },
 		TSX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.s); },
 		LDA: function (cpu, addr) { set_nz(cpu, cpu.a = cpu.read(addr)); },
 		LDX: function (cpu, addr) { set_nz(cpu, cpu.x = cpu.read(addr)); },
@@ -205,5 +205,6 @@ module.exports = (function(){
 		BCC: function (cpu, addr) { if(!cpu.c) cpu.pc = addr; },
 		BCS: function (cpu, addr) { if(cpu.c) cpu.pc = addr; },
 		BVC: function (cpu, addr) { if(!cpu.v) cpu.pc = addr; },
+		BVS: function (cpu, addr) { if(cpu.v) cpu.pc = addr; }
 	};
 })();
