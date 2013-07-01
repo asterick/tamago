@@ -97,7 +97,6 @@ tamago[debugger] {
 
 	disassembly {
 		display: block;
-		overflow: hidden;
 
 		instruction {
 			display: block;
@@ -109,17 +108,17 @@ tamago[debugger] {
 				background: $green;
 			}
 
+			* { margin: 0; padding: 0 1ex; }
+
 			location {
 				color: $bright-orange;
 				display: inline-block;
 				width: 4ex;
-				padding: 0 1ex;
 			}
 			opcode {
 				color: $blue-green-2;
 				display: inline-block;
 				width: 3ex;
-				padding: 0 1ex;
 			}
 
 			data {
