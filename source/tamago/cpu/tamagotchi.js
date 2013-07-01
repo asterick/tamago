@@ -66,7 +66,7 @@ module.exports = (function(){
 			// Display memory
 			for (i = 0x1000; i < 0x3000; i+=0x0100) {
 				data = new Uint8Array(this._dram.buffer, i % this._dram.length, 0x100);
-				this.ram_debug(i>>8, data, i);
+				this.ram(i>>8, data, i);
 			}
 
 			// CPU registers
@@ -170,22 +170,6 @@ module.exports = (function(){
 
 			return this._writebank[bank](byte, data);
 		};
-
-		system.prototype.ram_debug = function (bank, data, g) {
-			var cpu = this;
-			function read(reg) {
-				console.log(cpu.pc.toString(16), "R", (reg+g).toString(16));
-				return data[reg];
-			}
-
-			function write(reg, value) {
-				console.log(cpu.pc.toString(16), "W", (reg+g).toString(16), value.toString(2));
-				data[reg] = value;
-			}
-
-			this._readbank[bank] = read;
-			this._writebank[bank] = write;
-		}
 
 		system.prototype.ram = function (bank, data) {
 			function read(reg) {
