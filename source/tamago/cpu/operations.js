@@ -154,14 +154,15 @@ module.exports = (function () {
         },
         ADC: function (cpu, addr) {
             var data = cpu.read(addr),
-                al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
-                ah = (cpu.a & 0xF0) + (data & 0xF0) + ((al >= 0x10) ? 0x10 : 0),
-                o = (al & 0x0F) + ah;
+                o = cpu.a + data + (cpu.c ? 1 : 0);
 
             cpu.v = ~(cpu.a ^ data) & (cpu.a ^ o) & 0x80;
             set_nz(cpu, o & 0xFF);
 
             if (cpu.d) {
+                var al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
+                    ah = (cpu.a & 0xF0) + (data & 0xF0) + ((al >= 0x10) ? 0x10 : 0);
+                
                 // Decimal mode fixup
                 if (al > 0x09) { al += 0x06; }
                 if (ah > 0x90) { ah += 0x60; }
@@ -175,16 +176,17 @@ module.exports = (function () {
         },
         SBC: function (cpu, addr) {
             var data = cpu.read(addr),
-                al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 0 : 1),
-                ah = (cpu.a & 0xF0) - (data & 0xF0) - ((al < 0) ? 0x10 : 0),
-                o = (al & 0x0F) + ah;
+                o = cpu.a - data - (cpu.c ? 0 : 1);
 
             // All flags are like binary mode
             cpu.v = (cpu.a ^ data) & (cpu.a ^ o) & 0x80;
-            cpu.c = o & ~0xFF;
             set_nz(cpu, o & 0xFF);
+            cpu.c = o & ~0xFF;
 
             if (cpu.d) {
+                var al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 0 : 1),
+                    ah = (cpu.a & 0xF0) - (data & 0xF0) - ((al < 0) ? 0x10 : 0);
+
                 // Calculate fix up decimal mode
                 if (al < 0x00) { al -= 0x06; }
                 if (ah < 0x00) { ah -= 0x60; }

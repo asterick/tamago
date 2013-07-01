@@ -45,6 +45,27 @@ $30ba
 $30ff
 
 
+PORT A
+======
+0: A-C
+1: A-C
+2: A-C
+3
+4
+5
+6
+7
+
+PORT B
+======
+0: I2C data
+1: I2D clk
+2: EEPROM Power
+3: 
+4: SPI_CSN
+5: SPI_CLK
+6: SPI_TX
+7: SPI_RX
 
 IRQ Vector Table
 ================
