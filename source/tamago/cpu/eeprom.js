@@ -76,12 +76,9 @@ module.exports = (function(){
 				this._output = (this._write & 0x80) ? 1 : 0;
 				this._write = this._write << 1;
 			} else {
-				console.log("STATE:", this._state, this._read.toString(16));
 				// We have received a full command / output a value
 				switch (this._state) {
 				case COMMAND:
-					console.log("EEPROM CMD:", this._read.toString(16));
-					
 					switch(this._read & 0xF1) {
 					case 0xA0: // Write
 						this._state = ADDRESS;
@@ -97,7 +94,6 @@ module.exports = (function(){
 					// Update address
 					this._address = ((this._address << 8) | this._read) % this.data.length;
 					if (++this._addressbyte >= this.address_width) {
-						console.log(this._address.toString(16))
 						this._state = WRITE;
 					}
 					break ;
