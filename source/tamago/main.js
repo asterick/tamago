@@ -1,6 +1,7 @@
 module.exports = (function() {
 	var config = require ("tamago/config.js"),
 		tamagotchi = require("tamago/cpu/tamagotchi.js"),
+		testgo =  require("tamago/cpu/testgo.js"),
 		disassemble = require("tamago/cpu/disassembler.js"),
 		
 		object = require("util/object.js"),
@@ -10,6 +11,39 @@ module.exports = (function() {
 	ready(function () {
 		template = ejs.parse(template);
 	})
+
+	function start(bios) {
+		var xhr = new XMLHttpRequest();
+		/* TAMAGOTCHI
+		xhr.open("GET", "files/tamago.bin", true);
+		//*/
+
+		///* TEST-I-GOTCHI
+		tamagotchi = testgo;
+		xhr.open("GET", "/files/6502_functional_test.bin", true);
+		//*/
+
+		xhr.responseType = "arraybuffer";
+		xhr.send();
+
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState !== 4) {
+				return ;
+			}
+
+			if (xhr.status !== 200) {
+				throw new Error("Could not download firmware");
+			}
+
+			// Bind to tamago system class
+			tamagotchi.system.prototype.bios = xhr.response;
+
+			// Start the application when BIOS is done
+			[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
+				new Tamago(elem);
+			});
+		};
+	}
 
 	function Tamago(element) {
 		this.configure(element);
@@ -209,15 +243,6 @@ module.exports = (function() {
 			this.run();
 		}
 	};
-
-	function start(bios) {
-		// Bind to tamago system class
-		tamagotchi.system.prototype.bios = bios;
-
-		[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
-			new Tamago(elem);
-		});
-	}
 
 	return {
 		start: start

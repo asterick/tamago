@@ -11,8 +11,9 @@ module.exports = (function(){
 		this._readbank = new Array(0x10000);
 		this._writebank = new Array(0x10000);
 
+		this._cpuacc = new Uint8Array(0x10000);	// Access flags
+
 		this._cpureg = new Uint8Array(0x100);	// Control registers
-		this._cpuacc = new Uint8Array(0x10000);	// Control registers
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
 		this._eeprom = new eeprom.eeprom(12);	// new 32kb eeprom

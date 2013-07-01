@@ -60,10 +60,8 @@ module.exports = {
 	indirect: function (cpu) {
 		var addr = cpu.next_16(),
 			addr_l = cpu.read(addr),
-			addr_h;
+			addr_h = cpu.read(((addr + 1) & 0x00FF) | (addr & 0xFF00));
 
-		addr = ((addr + 1) & 0x00FF) | (addr & 0xFF00);
-		addr_h = cpu.read(addr);
 		addr = addr_l | (addr_h << 8);
 
 		return addr;
@@ -72,7 +70,7 @@ module.exports = {
 	indirectX: function (cpu) {
 		var addr = (cpu.next() + cpu.x) & 0xFF,
 			addr_l = cpu.read(addr),
-			addr_h = cpu.read(++addr & 0xFF);
+			addr_h = cpu.read((addr+1) & 0xFF);
 		
 		addr = addr_l | (addr_h << 8);
 		return addr;
@@ -81,7 +79,7 @@ module.exports = {
 	indirectY: function (cpu) {
 		var addr = cpu.next(),
 			addr_l = cpu.read(addr),
-			addr_h = cpu.read(++addr & 0xFF);
+			addr_h = cpu.read((addr+1) & 0xFF);
 
 		addr = ((addr_l | (addr_h << 8)) + cpu.y) & 0xFFFF;
 		return addr;
