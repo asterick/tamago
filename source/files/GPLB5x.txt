@@ -56,6 +56,9 @@ PORT A
 6
 7
 
+// chip latch data on rising edge
+// chip data change on falling edge
+
 PORT B
 ======
 0: I2C data
