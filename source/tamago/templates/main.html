@@ -55,16 +55,6 @@
 		</control>
 	</column>
 	<column>
-		<memory>
-			<% for (var i = 0; i < 0x600; i += memoryBytesPerLine ) { %>
-				<row>
-					<address><%= toHex(4, i) %></address>
-					<% for (var b = 0; b < memoryBytesPerLine; b ++ ) { %>
-						<byte data-address="<%= i+b %>"><%= "00" %></byte>
-					<% } %>
-				</row>
-			<% } %>
-		</memory>
 		<disassembly>
 			<% for (var i = 0; i < instructionCount; i++ ) { %>
 			<instruction port>
@@ -75,5 +65,17 @@
 			</instruction>
 			<% } %>
 		</disassembly>
+	</column>
+	<column>
+		<memory>
+			<% for (var i = 0; i < 0x600; i += memoryBytesPerLine ) { %>
+				<row>
+					<address><%= toHex(4, i) %></address>
+					<% for (var b = 0; b < memoryBytesPerLine; b ++ ) { %>
+						<byte data-address="<%= i+b %>"><%= "00" %></byte>
+					<% } %>
+				</row>
+			<% } %>
+		</memory>
 	<% } %>
 </column>

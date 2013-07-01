@@ -15,10 +15,6 @@ module.exports = (function(){
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
 
-		function random(a) { for (var i = a.length-1; i >= 0; i--) a[i] = 0xCB; }
-		random(this._dram);
-		random(this._wram);
-
 		// Configure and reset
 		this.init();
 		this.reset();
@@ -113,6 +109,7 @@ module.exports = (function(){
 				break ;
 			default:
 				console.log(
+					this.pc.toString(16),
 					"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
 					"             ", 
 					ports[reg|0x3000] || "---");
@@ -136,6 +133,7 @@ module.exports = (function(){
 				break ;
 			default:
 				console.log(
+					this.pc.toString(16),
 					"Unhandled register write (" + (0x3000+reg).toString(16) + ")", 
 					pad(data.toString(16),2), 
 					"-", 

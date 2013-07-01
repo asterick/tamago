@@ -7,7 +7,7 @@ module.exports = {
 
 		return zeros.substr(0, w).substr(i.length) + i;
 	},
-	memoryBytesPerLine: 32,
+	memoryBytesPerLine: 16,
 	registerBytesPerLine: 8,
-	instructionCount: 32
+	instructionCount: 50
 };

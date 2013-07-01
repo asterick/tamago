@@ -48,35 +48,40 @@ module.exports = (function(){
 
 		// Shifter
 		ASL: function (cpu, addr) {
-			var data = cpu.read(addr) << 1;
+			var data = cpu.read(addr),
+				out = (data << 1) & 0xFF;
 
-			cpu.c = data & ~0xFF;
+			cpu.c = data & 0x80;
 			
-			data &= 0xFF;
-			set_nz(cpu, data);
-			cpu.write(addr, data);
+			set_nz(cpu, out);
+			cpu.write(addr, out);
 		},
 		LSR: function (cpu, addr) {
-			var data = cpu.read(addr);
-			cpu.c = data & 1;
-			data >>= 1;
-			set_nz(cpu, data);
-			cpu.write(addr, data);
-		},
-		ROL: function (cpu, addr) {
-			var data = (cpu.read(addr) << 1) | (cpu.c ? 1 : 0);
-
-			cpu.c = data & ~0xFF;
+			var data = cpu.read(addr),
+				out = data >> 1;
 			
-			data &= 0xFF;
-			set_nz(cpu, data);
-			cpu.write(addr, data);
+			cpu.c = data & 0x01;
+			
+			set_nz(cpu, out);
+			cpu.write(addr, out);
 		},
+
+		ROL: function (cpu, addr) {
+			var data = cpu.read(addr),
+				out = ((data << 1) & 0xFF) | (cpu.c ? 1 : 0);
+
+			cpu.c = data & 0x80;
+			
+			set_nz(cpu, out);
+			cpu.write(addr, out);
+		},
+
 		ROR: function (cpu, addr) {
 			var data = cpu.read(addr),
 				out = (data >> 1) | (cpu.c ? 0x80 : 0);
 
-			cpu.c = data & 1;
+			cpu.c = data & 0x01;
+
 			set_nz(cpu, out);
 			cpu.write(addr, out);
 		},
@@ -106,7 +111,7 @@ module.exports = (function(){
 		},
 		ADC: function (cpu, addr) {
 			var data = cpu.read(addr),
-				o = data + cpu.a + (cpu.c ? 1 : 0);
+				o = cpu.a + data + (cpu.c ? 1 : 0);
 
 			if (cpu.d) {
 				var al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
@@ -132,7 +137,7 @@ module.exports = (function(){
 		},
 		SBC: function (cpu, addr) {
 			var data = cpu.read(addr),
-				o = data - cpu.a - (cpu.c ? 0 : 1);
+				o = cpu.a - data - (cpu.c ? 0 : 1);
 
 			// All flags are like binary mode
 			cpu.v = (cpu.a ^ data) & (o ^ data) & 0x80;				

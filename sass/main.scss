@@ -102,6 +102,8 @@ tamago[debugger] {
 		instruction {
 			display: block;
 			position: relative;
+			min-width: 80ex;
+			height: 1em;
 
 			&.active {
 				background: $green;
@@ -189,7 +191,7 @@ tamago[debugger] {
 	}
 
 	memory {
-		height: 12em;
+		height: 50em;
 	}
 
 	control {
