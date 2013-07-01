@@ -138,20 +138,24 @@ module.exports = (function(){
 		};
 
 		system.prototype.reg_write = function (reg, data) {
+			this._cpureg[reg] = data;
+
 			switch (reg) {
 			case 0x00: // P_CPU_Bank_Ctrl
 				this.set_rom_page(data);
 				break ;
 			case 0x01:
 			case 0x10:
-			case 0x11:
-			case 0x12:
+			case 0x11: // P_PortA_Dir
+			case 0x12: // P_PortA_Data
 			case 0x13:
 			case 0x14:
-			case 0x15:
 				break ;
+			case 0x15: // P_PortB_Dir
 			case 0x16: // P_PortB_Data
-				this._eeprom.update(data&4, data&2, data&1);
+				var mask = this._cpureg[0x15],
+					d = mask & this._cpureg[0x16];
+				this._eeprom.update(d&4, d&2, d&1);
 				break ;
 			default:
 				console.log(
@@ -163,8 +167,6 @@ module.exports = (function(){
 					pad(data.toString(2), 8), 
 					ports[reg|0x3000] || "---");
 			}
-
-			this._cpureg[reg] = data;
 		};
 
 		system.prototype.read = function(addr) {
