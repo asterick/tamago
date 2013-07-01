@@ -154,37 +154,30 @@ module.exports = (function () {
         },
         ADC: function (cpu, addr) {
             var data = cpu.read(addr),
-                o = cpu.a + data + (cpu.c ? 1 : 0);
+                al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
+                ah = (cpu.a & 0xF0) + (data & 0xF0) + ((al >= 0x10) ? 0x10 : 0),
+                o = (al & 0x0F) + ah;
+
+            cpu.v = ~(cpu.a ^ data) & (cpu.a ^ o) & 0x80;
+            set_nz(cpu, o & 0xFF);
 
             if (cpu.d) {
-                var al = (cpu.a & 0x0F) + (data & 0x0F) + (cpu.c ? 1 : 0),
-                    ah = (cpu.a & 0xF0) + (data & 0xF0);
-
-                // These are not affected by decimal mode
-                cpu.v = ~ (cpu.a ^ data) & (o ^ data) & 0x80;
-                cpu.n = o & 0x80;
-
                 // Decimal mode fixup
-                if (al > 0x09) {
-                    al += 0x06;
-                }
-                if (ah > 0x90) {
-                    ah += 0x60;
-                }
+                if (al > 0x09) { al += 0x06; }
+                if (ah > 0x90) { ah += 0x60; }
 
-                // Result is the sum of the nibbles, combine and set flags
-                o = al + ah;
-                cpu.c = o & ~0xFF;
-                cpu.z = !(cpu.a = o & 0xFF);
-            } else {
-                cpu.v = ~ (cpu.a ^ data) & (o ^ data) & 0x80;
-                cpu.c = o & ~0xFF;
-                set_nz(cpu, cpu.a = o & 0xFF);
+                // We fixed up the decimal, recombine
+                o = (al & 0x0F) + ah; 
             }
+
+            cpu.c = o & ~0xFF;
+            cpu.a = o & 0xFF;
         },
         SBC: function (cpu, addr) {
             var data = cpu.read(addr),
-                o = cpu.a - data - (cpu.c ? 0 : 1);
+                al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 0 : 1),
+                ah = (cpu.a & 0xF0) - (data & 0xF0) - ((al < 0) ? 0x10 : 0),
+                o = (al & 0x0F) + ah;
 
             // All flags are like binary mode
             cpu.v = (cpu.a ^ data) & (cpu.a ^ o) & 0x80;
@@ -193,20 +186,13 @@ module.exports = (function () {
 
             if (cpu.d) {
                 // Calculate fix up decimal mode
-                var al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 1 : 0),
-                    ah = (cpu.a & 0xF0) - (data & 0xF0);
+                if (al < 0x00) { al -= 0x06; }
+                if (ah < 0x00) { ah -= 0x60; }
 
-                if (al < 0x00) {
-                    al -= 0x06;
-                }
-                if (ah < 0x00) {
-                    ah -= 0x60;
-                }
-
-                cpu.a = (al + ah) & 0xFF;
-            } else {
-                cpu.a = o & 0xFF;
+                o = (al & 0x0F) + ah;
             }
+
+            cpu.a = o & 0xFF;
         },
         CMP: function (cpu, addr) {
             var data = cpu.read(addr);
