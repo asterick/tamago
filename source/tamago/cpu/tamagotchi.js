@@ -28,6 +28,15 @@ module.exports = (function(){
 
 		system.prototype.CLOCK_RATE = 1000000;
 		system.prototype.MAX_ADVANCE = 1;
+		system.prototype.LCD_ORDER = [
+			0x068, 0x0C0, 0x0CC, 0x0D8,
+			0x0E4, 0x0F0, 0x1FC, 0x108,
+			0x114, 0x120, 0x12C, 0x138,
+			0x144, 0x150, 0x15C, 0x168,
+			0x074, 0x0B4, 0x0A8, 0x09C,
+			0x090, 0x084, 0x078, 0x06C,
+			0x060, 0x054, 0x048, 0x03C,
+			0x030, 0x024, 0x018];
 
 		system.prototype.step_realtime = function (trace) {
 			var t = +new Date() / 1000,
@@ -66,7 +75,7 @@ module.exports = (function(){
 			// Display memory
 			for (i = 0x1000; i < 0x3000; i+=0x0100) {
 				data = new Uint8Array(this._dram.buffer, i % this._dram.length, 0x100);
-				this.ram(i>>8, data, i);
+				this.ram_debug(i>>8, data, i);
 			}
 
 			// CPU registers
@@ -169,6 +178,20 @@ module.exports = (function(){
 				byte = addr & 0xFF;
 
 			return this._writebank[bank](byte, data);
+		};
+
+		system.prototype.ram_debug = function (bank, data, g) {
+			function read(reg) {
+				return data[reg];
+			}
+
+			function write(reg, value) {
+				console.log((g+reg).toString(16), value.toString(2))
+				data[reg] = value;
+			}
+
+			this._readbank[bank] = read;
+			this._writebank[bank] = write;
 		};
 
 		system.prototype.ram = function (bank, data) {

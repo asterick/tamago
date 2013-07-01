@@ -65,6 +65,7 @@ tamago[debugger] {
 		flags {
 			display: block;
 			padding: $padding-wide;
+			text-align: center;
 
 			&:before {
 				content: "Flags";

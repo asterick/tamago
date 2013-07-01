@@ -69,12 +69,16 @@ module.exports = (function() {
 	Tamago.prototype.refresh_simple = function () {
 		var a = 0, px = 0;
 
-		while (a < 0x200) {
-			var d = this.system._dram[a++], b = 6;
+		for (var y = 0; y < 31; y++) {
+			var a = this.system.LCD_ORDER[y]; 
 
-			while (b >= 0) {
-				this._pixels[px++] = this.palette[(d >> b) & 3];
-				b -= 2;
+			for (var x = 0; x < 64; x += 4) {
+				var d = this.system._dram[a++], b = 6;
+
+				while (b >= 0) {
+					this._pixels[px++] = this.palette[(d >> b) & 3];
+					b -= 2;
+				}
 			}
 		}
 	
