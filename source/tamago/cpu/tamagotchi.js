@@ -8,6 +8,8 @@ module.exports = (function(){
 		ACCESS_WRITE	= 0x02;
 
 	function system() {
+		var that = this;
+
 		this._readbank = new Array(0x10000);
 		this._writebank = new Array(0x10000);
 
@@ -17,6 +19,7 @@ module.exports = (function(){
 		this._dram   = new Uint8Array(0x200);	// Display memory
 		this._wram	 = new Uint8Array(0x600);	// System memory
 		this._eeprom = new eeprom.eeprom(12);	// new 32kb eeprom
+		this._keys	 = 0xF;
 
 		// Configure and reset
 		this.init();
@@ -24,12 +27,20 @@ module.exports = (function(){
 
 		this.cycles_error = 0;
 		this.previous_clock = 0;
+
+		document.addEventListener("keyup", function (e) {
+			that._keys |= that.mapping[e.keyCode] || 0;
+		});
+		document.addEventListener("keydown", function (e) {
+			that._keys &= ~that.mapping[e.keyCode] || 0xFF;
+		});
 	}
 
 	ready(function() {
 		system.prototype = Object.create(r6502.r6502);	
 
-		system.prototype.CLOCK_RATE = 1000000;
+		system.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
+		system.prototype.CLOCK_RATE = 4000000;
 		system.prototype.MAX_ADVANCE = 1;
 		system.prototype.LCD_ORDER = [
 			0x0C0, 0x0CC, 0x0D8, 0x0E4, 
@@ -115,11 +126,16 @@ module.exports = (function(){
 
 			case 0x10:
 			case 0x11:
-			case 0x12:
 			case 0x13:
 			case 0x14:
-			case 0x15:			
+			case 0x15:	
 				break ;
+			case 0x12: // P_PortA_Data
+				var mask = this._cpureg[0x11],
+					input = 
+						this._keys;
+				
+				return (mask & this._cpureg[0x12]) | (~mask & input);
 			case 0x16: // P_PortB_Data
 				var mask = this._cpureg[0x15],
 					input = 

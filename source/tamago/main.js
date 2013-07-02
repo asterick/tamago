@@ -1,7 +1,6 @@
 module.exports = (function() {
 	var config = require ("tamago/config.js"),
 		tamagotchi = require("tamago/cpu/tamagotchi.js"),
-		testgo =  require("tamago/cpu/testgo.js"),
 		disassemble = require("tamago/cpu/disassembler.js"),
 		
 		object = require("util/object.js"),
@@ -14,14 +13,7 @@ module.exports = (function() {
 
 	function start(bios) {
 		var xhr = new XMLHttpRequest();
-		///* TAMAGOTCHI
 		xhr.open("GET", "files/tamago.bin", true);
-		//*/
-
-		/* TEST-I-GOTCHI
-		tamagotchi = testgo;
-		xhr.open("GET", "/files/6502_functional_test.bin", true);
-		//*/
 
 		xhr.responseType = "arraybuffer";
 		xhr.send();
@@ -52,17 +44,22 @@ module.exports = (function() {
 
 		this.configure(element);
 
-		this._pixeldata = this.body.display.getImageData(0,0,64,32),
+		this._pixeldata = this.body.display.getImageData(0,0,64,31),
 		this._pixels = new Uint32Array(this._pixeldata.data.buffer)
 		this._disasmOffset = 0;
 
 		this.refresh();
 	}
 
-	Tamago.prototype.palette = [0xFFFFFFFF,0xFFAAAAAA,0xFF555555,0xFF000000];
+	Tamago.prototype.palette = [0xFFEEEEEE,0xFFA4A4A4,0xFF5A5A5A,0xFF111111];
+
+	Tamago.prototype.checked = function () {
+		if (this.body.trace) { return this.body.trace.checked; }
+		return false;
+	}
 
 	Tamago.prototype.step = function (e) {
-		if (this.body.trace.checked) this.system.trace();
+		if (this.checked()) this.system.trace();
 		this.system.step();
 		this.refresh();
 	}
@@ -81,19 +78,33 @@ module.exports = (function() {
 	Tamago.prototype.run = function (e) {
 		var that = this;
 
+		var q = 30;
+
 		function frame() {
-			that.system.step_realtime(that.body.trace.checked);
+			that.system.step_realtime(that.checked());
 			that.refresh();
 
 			if (that.running) {
 				requestAnimationFrame(frame);
+			}
+
+			q = (q + 1) % 10;
+				
+			that.system.map_irq(10); that.system.irq();
+
+			if (that.system._cpureg[0x71]) {
+				if (!q) { that.system.map_irq(13); that.system.irq(); }
+			}
+			
+			if (that.system._cpureg[0x76]) {
+				if (!q) { that.system.nmi(); }
 			}
 		}
 
 		this.running = !this.running;	
 		frame();
 
-		e.target.attributes.value.value = this.running ? "stop" : "run";
+		if (e) { e.target.attributes.value.value = this.running ? "stop" : "run"; }
 	}
 
 	Tamago.prototype.reset = function (e) {
@@ -102,8 +113,16 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.refresh_simple = function () {
-		var a = 0, px = 0;
+		var a = 4, b = 0, g = 0;
 
+		while (g < 10) {
+			var glyph = (this.system._dram[a] >> b) & 3;
+			if ((b -= 2) < 0) { b = 6; a++; }
+
+			this.body.glyphs[g++].style.color = "#" + (this.palette[glyph] & 0xFFFFFF).toString(16);
+		}
+
+		var px = 0;
 		for (var y = 0; y < 31; y++) {
 			var a = this.system.LCD_ORDER[y]; 
 
@@ -191,7 +210,8 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.configure = function(element) {
-		var data = Object.create(config);
+		var data = Object.create(config),
+			that = this;
 
 		data.ramBytes = this.system._wram.length;
 		data.registerBytes = this.system._cpureg.length;
@@ -202,13 +222,13 @@ module.exports = (function() {
 
 		// Bind to HTML
 		if (data.debug) {
-			var that = this;
 
 			[].forEach.call(document.querySelectorAll("input[type=button]"), function (el) {
 				el.addEventListener("click", that[el.attributes.action.value].bind(that))
 			});
 
 			this.body = {
+				glyphs: element.querySelectorAll("i.glyph"),
 				selects: [].reduce.call(element.querySelectorAll("select"), function (acc, f) { 
 					acc[f.attributes.action.value.toLowerCase()] = f;
 					return acc; 
@@ -241,10 +261,14 @@ module.exports = (function() {
 			};
 			this.refresh = this.refresh_debugger;
 		} else {
-			this.body = { display: element.querySelector("display canvas").getContext("2d") };
+			this.body = { 
+				glyphs: element.querySelectorAll("i.glyph"),
+				display: element.querySelector("display canvas").getContext("2d")
+			};
 
 			this.refresh = this.refresh_simple;
-			this.run();
+			// Start running soon
+			setTimeout(function() { that.run(); }, 10);
 		}
 	};
 
