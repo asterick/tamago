@@ -39,6 +39,8 @@ module.exports = (function(){
 		this.push(this.p | (brk ? 0x10 : 0));
 
 		this.pc = this.read_16(0xFFFE);
+
+		this.i = 1;
 	};
 
 	r6502.step = function () {

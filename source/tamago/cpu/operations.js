@@ -234,6 +234,7 @@ module.exports = (function () {
             cpu.pc = addr;
         },
         JSR: function (cpu, addr) {
+            cpu.pc = (cpu.pc - 1) & 0xFFFF;
             cpu.push(cpu.pc >> 8);
             cpu.push(cpu.pc & 0xFF);
             cpu.pc = addr;
@@ -246,9 +247,11 @@ module.exports = (function () {
         RTS: function (cpu, addr) {
             cpu.pc = cpu.pull();
             cpu.pc |= cpu.pull() << 8;
+            cpu.pc = (cpu.pc + 1) & 0xFFFF;
         },
         BRK: function (cpu, addr) {
             // This should probably actually find out which IRQ to service
+            cpu.pc = (cpu.pc + 1) & 0xFFFF;
             cpu.irq(true);
         },
 
