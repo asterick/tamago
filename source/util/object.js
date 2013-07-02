@@ -4,6 +4,10 @@ module.exports = (function() {
 		Object.getOwnPropertyNames(o).forEach(function (n) { cb(o[n], n, o); })
 	}
 
+	function extend(a, b) {
+		each(b, function (v, k) { a[k] = v; })
+	}
+
 	function fill(c, v) {
 		var a = []; 
 		if (v === undefined) { v = 0; }
@@ -13,6 +17,7 @@ module.exports = (function() {
 
 	return {
 		each: each,
+		extend: extend,
 		fill: fill
 	};
 })();

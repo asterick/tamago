@@ -53,13 +53,7 @@ module.exports = (function() {
 
 	Tamago.prototype.palette = [0xFFEEEEEE,0xFFA4A4A4,0xFF5A5A5A,0xFF111111];
 
-	Tamago.prototype.checked = function () {
-		if (this.body.trace) { return this.body.trace.checked; }
-		return false;
-	}
-
 	Tamago.prototype.step = function (e) {
-		if (this.checked()) this.system.trace();
 		this.system.step();
 		this.refresh();
 	}
@@ -81,7 +75,7 @@ module.exports = (function() {
 		var q = 30;
 
 		function frame() {
-			that.system.step_realtime(that.checked());
+			that.system.step_realtime();
 			that.refresh();
 
 			if (that.running) {
@@ -165,7 +159,7 @@ module.exports = (function() {
 
 
 		var disasm = disassemble.disassemble(config.instructionCount, this._disasmOffset, this.system),
-			bias = config.instructionCount / 2,
+			bias = Math.floor(config.instructionCount / 2),
 			current = disasm.reduce(function(acc, d, i){ return d.active ? i : acc; }, null);
 
 		// PC isn't were it should be
@@ -233,7 +227,6 @@ module.exports = (function() {
 					acc[f.attributes.action.value.toLowerCase()] = f;
 					return acc; 
 				}, {}),
-				trace: element.querySelector("input[type=checkbox]"),
 				flags: [].reduce.call(element.querySelectorAll("flag"), function (acc, f) { 
 					acc[f.attributes.name.value.toLowerCase()] = f;
 					return acc; 

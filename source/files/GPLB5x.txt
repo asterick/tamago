@@ -45,26 +45,30 @@ $30ba
 $30ff
 
 
+MISSING: 
+	IR Tx
+	IR Rx
+	SPI Power
+	Cart CD1
+	Cart CD2
+
 PORT A
 ======
 0: A
 1: B
 2: C
 3: Reset
-4
-5
-6
-7
-
-// chip latch data on rising edge
-// chip data change on falling edge
+4: (output)
+5: (input)
+6: (input)
+7: (input)
 
 PORT B
 ======
 0: I2C (eeprom) data
 1: I2C (eeprom) clk
 2: EEPROM Power
-3: 
+3: (output)
 4: SPI_CSN
 5: SPI_CLK
 6: SPI_TX

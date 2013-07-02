@@ -1,8 +1,8 @@
 module.exports = (function(){
 	var r6502 = require("tamago/cpu/6502.js"),
-		disassembler = require("tamago/cpu/disassembler.js"),
-		ports = require("tamago/data/ports.js"),
-		eeprom = require("tamago/cpu/eeprom.js");
+		eeprom = require("tamago/cpu/eeprom.js"),
+		registers = require("tamago/cpu/registers.js"),
+		object = require("util/object.js");
 
 	var ACCESS_READ		= 0x01,
 		ACCESS_WRITE	= 0x02;
@@ -38,6 +38,7 @@ module.exports = (function(){
 
 	ready(function() {
 		system.prototype = Object.create(r6502.r6502);	
+		object.extend(system.prototype, registers);
 
 		system.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
 		system.prototype.CLOCK_RATE = 4000000;
@@ -52,7 +53,7 @@ module.exports = (function(){
 			0x054, 0x048, 0x03C, 0x030, 
 			0x024, 0x018, 0x00C];
 
-		system.prototype.step_realtime = function (trace) {
+		system.prototype.step_realtime = function () {
 			var t = +new Date() / 1000,
 				d = Math.min(this.MAX_ADVANCE, t - this.previous_clock) || 0,
 				a = this.cycles_error + (this.CLOCK_RATE * d),
@@ -62,14 +63,7 @@ module.exports = (function(){
 			this.cycles += o;
 			this.cycles_error = a - o;
 			
-			if (trace) {
-				while(this.cycles > 0) { 
-					this.trace();
-					this.step();
-				}
-			} else {
-				while(this.cycles > 0) { this.step(); }
-			}
+			while(this.cycles > 0) { this.step(); }
 		}
 
 		system.prototype.map_irq = function (i) {
@@ -93,10 +87,7 @@ module.exports = (function(){
 			}
 
 			// CPU registers
-			for (i = 0x3000; i < 0x4000; i++) {
-				this._readbank[i] = this.reg_read.bind(this);
-				this._writebank[i] = this.reg_write.bind(this);
-			}
+			this.map_registers();
 
 			// Static rom
 			for (var i = 0; i < 0x40; i ++) {
@@ -107,85 +98,6 @@ module.exports = (function(){
 			this.set_rom_page(0);	// Clear current rom page
 		}
 
-		system.prototype.set_rom_page = function (bank) {
-			var offset = 0x8000 * (bank % 20);
-
-			for (var i = 0; i < 0x80; i ++) {
-				this.rom(i + 0x40, new Uint8Array(this.bios, offset + (i << 8), 0x100));
-			}
-		}
-
-		function pad(s, l) {
-			return "00000000".substr(0, l).substr(s.length) + s;
-		}
-
-		system.prototype.reg_read = function (reg) {
-			switch (reg) {
-			case 0x00: // P_CPU_Bank_Ctrl
-				break ;
-
-			case 0x10:
-			case 0x11:
-			case 0x13:
-			case 0x14:
-			case 0x15:	
-				break ;
-			case 0x12: // P_PortA_Data
-				var mask = this._cpureg[0x11],
-					input = 
-						this._keys;
-				
-				return (mask & this._cpureg[0x12]) | (~mask & input);
-			case 0x16: // P_PortB_Data
-				var mask = this._cpureg[0x15],
-					input = 
-						(this._eeprom._output ? 1 : 0);
-				
-				return (mask & this._cpureg[0x16]) | (~mask & input);
-			default:
-				console.log(
-					pad(this._cpureg[0].toString(16), 2),
-					this.pc.toString(16),
-					"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
-					"             ", 
-					ports[reg|0x3000] || "---");
-			}
-
-			return this._cpureg[reg];
-		};
-
-		system.prototype.reg_write = function (reg, data) {
-			this._cpureg[reg] = data;
-
-			switch (reg) {
-			case 0x00: // P_CPU_Bank_Ctrl
-				this.set_rom_page(data);
-				break ;
-			case 0x01:
-			case 0x10:
-			case 0x11: // P_PortA_Dir
-			case 0x12: // P_PortA_Data
-			case 0x13:
-			case 0x14:
-				break ;
-			case 0x15: // P_PortB_Dir
-			case 0x16: // P_PortB_Data
-				var mask = this._cpureg[0x15],
-					d = mask & this._cpureg[0x16];
-				this._eeprom.update(d&4, d&2, d&1);
-				break ;
-			default:
-				console.log(
-					pad(this._cpureg[0].toString(16), 2),					
-					this.pc.toString(16),
-					"Unhandled register write (" + (0x3000+reg).toString(16) + ")", 
-					pad(data.toString(16),2), 
-					"-", 
-					pad(data.toString(2), 8), 
-					ports[reg|0x3000] || "---");
-			}
-		};
-
 		system.prototype.read = function(addr) {
 			// A addressing
 			if (addr === null) {
@@ -194,7 +106,7 @@ module.exports = (function(){
 
 			this._cpuacc[addr] |= ACCESS_READ;
 
-			return this._readbank[addr](addr & 0xFF);
+			return this._readbank[addr].call(this, addr & 0xFF);
 		};
 
 		system.prototype.write = function (addr, data) {
@@ -205,9 +117,17 @@ module.exports = (function(){
 
 			this._cpuacc[addr] |= ACCESS_WRITE;
 
-			return this._writebank[addr](addr & 0xFF, data);
+			return this._writebank[addr].call(this, addr & 0xFF, data);
 		};
 
+		// Start helper functions for mapping to memory
+		system.prototype.set_rom_page = function (bank) {
+			var offset = 0x8000 * (bank % 20);
+
+			for (var i = 0; i < 0x80; i ++) {
+				this.rom(i + 0x40, new Uint8Array(this.bios, offset + (i << 8), 0x100));
+			}
+		}
 		system.prototype.ram = function (bank, data) {
 			function read(reg) {
 				return data[reg];
@@ -236,48 +156,6 @@ module.exports = (function(){
 				this._writebank[bank+i] = nullwrite;
 			}
 		};
-
-		system.prototype.trace = function () {
-			var op = disassembler.disassemble(1, this.pc, this)[0];
-
-			var addr = "$" + (op.data || 0).toString(16);
-
-			switch (op.mode) {
-				case "implied":
-					addr = "";
-					break ;
-				case "accumulator": 
-					addr = "A";
-					break ;
-				case "relative": 
-					addr = "$" + op.location.toString(16);
-					break ;
-				case "immediate": 
-				case "absolute": 
-				case "zeropage": 
-					break ;
-				case "zeropageX": 
-				case "absoluteX": 
-					addr += ", X";
-					break ;
-				case "zeropageY": 
-				case "absoluteY": 
-					addr += ", Y";
-					break ;
-				case "indirect": 
-					addr = "(" + addr + ")";
-					break ;
-				case "indirectX": 
-					addr = "(" + addr + ", X)";
-					break ;
-				case "indirectY": 
-					addr = "(" + addr + "), Y";
-					break ;
-			}
-
-			// TODO: BITS AND JUNK
-			console.log(op.instruction, addr);
-		}
 	});
 
 	return {

@@ -6,6 +6,7 @@ module.exports = {
 	0x3000: "P_CPU_Bank_Ctrl",
 	0x3001: "P_CPU_Clk_Ctrl",
 	0x3002: "P_32768_EN",
+	0x3004: "Sound Waveform?",
 	0x3007: "P_Wakeup_Ctrl",
 	0x3010: "P_PortA_Config",
 	0x3011: "P_PortA_Dir",
