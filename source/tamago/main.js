@@ -64,7 +64,7 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.nmi = function (e) {
-		this.system.nmi();
+		this.system.nmi(6);
 		this.refresh();
 	}
 
@@ -86,7 +86,9 @@ module.exports = (function() {
 			that.system.fire_irq(10);
 
 			if (that.system._cpureg[0x71]) {
-				if (!q) { that.system.fire_irq(13); }
+				if (!q) { 
+					that.system.fire_irq(13);
+				}
 			}
 			
 			if (that.system._cpureg[0x76]) {

@@ -4,17 +4,18 @@ module.exports = (function () {
 
 	// ==== Bank Switch ====
 	function write_bank(reg, value) {
+		this._cpureg[reg] = value;
 		this.set_rom_page(value);
 	}
 
 	// ==== IRQ Logic ===
 	function write_int_flag(reg, value) {
-		debugger ;
 		this._cpureg[reg] &= ~value;
 	}
 
 	// ==== PortA ====
 	function write_porta_dir_data(reg, value) {
+		this._cpureg[reg] = value;
 		// no writes yet.
 	}
 
@@ -31,6 +32,7 @@ module.exports = (function () {
 		var mask = this._cpureg[0x15],
 			d = mask & this._cpureg[0x16];
 		this._eeprom.update(d&4, d&2, d&1);
+		this._cpureg[reg] = value;
 	}
 
 	function read_portb_data(reg, value) {
@@ -67,6 +69,7 @@ module.exports = (function () {
 			"-", 
 			pad(data.toString(2), 8), 
 			ports[reg|0x3000] || "---");
+		this._cpureg[reg] = data;
 	}
 
 	var register_layout = {
@@ -100,16 +103,12 @@ module.exports = (function () {
 				~function () {
 					var layout = register_layout[i] || undef_register,
 						read   = layout.read || function (reg) { return this._cpureg[reg]; },
-						write  = layout.write,
-						acc_write = function (reg, data) {
-							this._cpureg[reg] = data;
-							if (write) { write.call(this, reg, data); }
-						};
+						write  = layout.write || function (reg, data) { this._cpureg[reg] = data; };
 
 					// Map registers to their mirrors as well
 					for (var a = 0x3000; a < 0x4000; a += 0x100) {
 						this._readbank[a+i] = read;
-						this._writebank[a+i] = acc_write;
+						this._writebank[a+i] = write;
 					}
 				}.call(this);
 			}

@@ -20,11 +20,12 @@ module.exports = (function(){
 		this._wram	 = new Uint8Array(0x600);		// System memory
 		this._eeprom = new eeprom.eeprom(12);		// new 32kb eeprom
 		this._keys	 = 0xF;
-		this._irqs	 = new Uint16Array(this.bios, 0x3FC0, 16);
-		this._setirq = new Uint16Array(0x10000);
+		this._irqs = new Uint16Array(0x10000);
 
-		for (var i = 0; i < this._setirq.length; i++) {
-			this._setirq[i] = 15 - (i ? (Math.log(i) / Math.log(2)) : 0) ;
+		// Convert a 16bit mask into a priority encoded IRQ table
+		var irqs = new Uint16Array(this.bios, 0x3FC0, 16);
+		for (var i = 0; i < this._irqs.length; i++) {
+			this._irqs[i] = irqs[15 - Math.floor(i ? (Math.log(i) / Math.log(2)) : 0)];
 		}
 
 		// Configure and reset
@@ -73,6 +74,7 @@ module.exports = (function(){
 		}
 
 		system.prototype.fire_nmi = function (i) {
+			debugger ;
 			// TODO: FILTER 
 			this.nmi();
 		}
@@ -115,8 +117,8 @@ module.exports = (function(){
 				this.rom(i + 0xC0, new Uint8Array(this.bios, i << 8, 0x100));
 			}
 
-			this._readbank[0xFFFE] = function () { return this._irqs[this._setirq[this.pending_irq()]] & 0xFF; }
-			this._readbank[0xFFFF] = function () { return this._irqs[this._setirq[this.pending_irq()]] >> 8; }
+			this._readbank[0xFFFE] = function () { return this._irqs[this.pending_irq()] & 0xFF; }
+			this._readbank[0xFFFF] = function () { return this._irqs[this.pending_irq()] >> 8; }
 
 			// Bankable rom
 			this.set_rom_page(0);	// Clear current rom page
