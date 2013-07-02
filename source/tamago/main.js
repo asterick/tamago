@@ -14,11 +14,11 @@ module.exports = (function() {
 
 	function start(bios) {
 		var xhr = new XMLHttpRequest();
-		/* TAMAGOTCHI
+		///* TAMAGOTCHI
 		xhr.open("GET", "files/tamago.bin", true);
 		//*/
 
-		///* TEST-I-GOTCHI
+		/* TEST-I-GOTCHI
 		tamagotchi = testgo;
 		xhr.open("GET", "/files/6502_functional_test.bin", true);
 		//*/

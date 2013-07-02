@@ -172,6 +172,7 @@ module.exports = (function () {
             }
 
             cpu.c = o & ~0xFF;
+
             cpu.a = o & 0xFF;
         },
         SBC: function (cpu, addr) {
@@ -181,7 +182,7 @@ module.exports = (function () {
             // All flags are like binary mode
             cpu.v = (cpu.a ^ data) & (cpu.a ^ o) & 0x80;
             set_nz(cpu, o & 0xFF);
-            cpu.c = o & ~0xFF;
+            cpu.c = !(o & ~0xFF);
 
             if (cpu.d) {
                 var al = (cpu.a & 0x0F) - (data & 0x0F) - (cpu.c ? 0 : 1),
