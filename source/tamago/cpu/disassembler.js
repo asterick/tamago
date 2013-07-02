@@ -146,7 +146,7 @@ module.exports = (function(){
 			}
 
 			if (pos === cpu.pc) { output.active = true ; }
-			output.port = ports[output.address];
+			output.port = (ports[output.address] || {}).name;
 			output.mode = op.addressing;
 			output.location = pos;
 

@@ -55,7 +55,7 @@ module.exports = (function () {
 			this.pc.toString(16),
 			"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
 			"             ", 
-			ports[reg|0x3000] || "---");
+			(ports[reg|0x3000] || {}).name || "---");
 
 		return this._cpureg[reg];
 	}
@@ -68,7 +68,7 @@ module.exports = (function () {
 			pad(data.toString(16),2), 
 			"-", 
 			pad(data.toString(2), 8), 
-			ports[reg|0x3000] || "---");
+			(ports[reg|0x3000] || {}).name || "---");
 		this._cpureg[reg] = data;
 	}
 
