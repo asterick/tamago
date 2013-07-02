@@ -31,7 +31,7 @@ module.exports = (function(){
 		this._last_data = data;
 
 		// This chip is not receiving power, so it is idle.
-		if (true || !power) {
+		if (!power) {
 			this._state = DISABLED;
 			this._output = 1; // NACK
 			return ;
