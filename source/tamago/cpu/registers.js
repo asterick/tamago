@@ -2,10 +2,15 @@ module.exports = (function () {
 	var ports = require("tamago/data/ports.js"),
 		object = require("util/object.js");
 
-	// --- Actual registers ---
-	// Mapped register actions
+	// ==== Bank Switch ====
 	function write_bank(reg, value) {
 		this.set_rom_page(value);
+	}
+
+	// ==== IRQ Logic ===
+	function write_int_flag(reg, value) {
+		debugger ;
+		this._cpureg[reg] &= ~value;
 	}
 
 	// ==== PortA ====
@@ -66,10 +71,17 @@ module.exports = (function () {
 
 	var register_layout = {
 		"0x00": { write: write_bank },
+		"0x01": {}, // SILENCE CLK CTRL
+		"0x10": {},	// SILENCE CONFIG
 		"0x11": { write: write_porta_dir_data },
 		"0x12": { write: write_porta_dir_data, read: read_porta_data },
+		"0x14": {},	// SILENCE CONFIG
 		"0x15": { write: write_portb_dir_data },
-		"0x16": { write: write_portb_dir_data, read: read_portb_data }
+		"0x16": { write: write_portb_dir_data, read: read_portb_data },
+		"0x70": {},
+		"0x71": {},
+		"0x73": { write: write_int_flag },
+		"0x74": { write: write_int_flag }
 	}, undef_register = {
 		read: undef_read, 
 		write: undef_write 

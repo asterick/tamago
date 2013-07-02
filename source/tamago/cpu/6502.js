@@ -44,6 +44,9 @@ module.exports = (function(){
 	};
 
 	r6502.step = function () {
+		// Fire pending IRQs
+		if (!this.i && this.pending_irq()) { this.irq(); }
+
 		var next = ops[this.next()];
 		if (next === undefined) { throw new Error("System has crashed (invalid operation)"); }
 		next.operation(this, next.address(this));

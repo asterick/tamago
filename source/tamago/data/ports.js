@@ -8,6 +8,7 @@ module.exports = {
 	0x3002: "P_32768_EN",
 	0x3004: "Sound Waveform?",
 	0x3007: "P_Wakeup_Ctrl",
+
 	0x3010: "P_PortA_Config",
 	0x3011: "P_PortA_Dir",
 	0x3012: "P_PortA_Data",
@@ -15,6 +16,7 @@ module.exports = {
 	0x3014: "P_PortB_Config",
 	0x3015: "P_PortB_Dir",
 	0x3016: "P_PortB_Data",
+
 	0x3031: "Timer Control ?",
 	0x3032: "Timer Output 1?",
 	0x3033: "Timer Output 2?",
@@ -30,6 +32,7 @@ module.exports = {
 	0x3045: "P_LCD_COM_Num",
 	0x3047: "P_LCD_Buffer_Ctrl",
 	0x3049: "P_LCD_Pump_Ctrl",
+
 	0x3070: "P_INT_Ctrl0",	// Enable
 	0x3071: "P_INT_Ctrl1",	// Enable
 	0x3072: "P_INT_Ctrl2 ?",

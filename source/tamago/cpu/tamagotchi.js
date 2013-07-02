@@ -13,13 +13,19 @@ module.exports = (function(){
 		this._readbank = new Array(0x10000);
 		this._writebank = new Array(0x10000);
 
-		this._cpuacc = new Uint8Array(0x10000);	// Access flags
+		this._cpuacc = new Uint8Array(0x10000);		// Access flags
 
-		this._cpureg = new Uint8Array(0x100);	// Control registers
-		this._dram   = new Uint8Array(0x200);	// Display memory
-		this._wram	 = new Uint8Array(0x600);	// System memory
-		this._eeprom = new eeprom.eeprom(12);	// new 32kb eeprom
+		this._cpureg = new Uint8Array(0x100);		// Control registers
+		this._dram   = new Uint8Array(0x200);		// Display memory
+		this._wram	 = new Uint8Array(0x600);		// System memory
+		this._eeprom = new eeprom.eeprom(12);		// new 32kb eeprom
 		this._keys	 = 0xF;
+		this._irqs	 = new Uint16Array(this.bios, 0x3FC0, 16);
+		this._setirq = new Uint16Array(0x10000);
+
+		for (var i = 0; i < this._setirq.length; i++) {
+			this._setirq[i] = 15 - (i ? (Math.log(i) / Math.log(2)) : 0) ;
+		}
 
 		// Configure and reset
 		this.init();
@@ -66,9 +72,24 @@ module.exports = (function(){
 			while(this.cycles > 0) { this.step(); }
 		}
 
-		system.prototype.map_irq = function (i) {
-			var b = new Uint16Array(this.bios, 0x3FC0, 0x20);
-			b[31] = b[i];
+		system.prototype.fire_nmi = function (i) {
+			// TODO: FILTER 
+			this.nmi();
+		}
+
+		system.prototype.pending_irq = function () {
+			return (this._cpureg[0x73] << 8) | this._cpureg[0x74];
+		}
+
+		system.prototype.fire_irq = function (i) {
+			// Map the pending interrupt
+			var mask = (this._cpureg[0x70] << 8) | this._cpureg[0x71];
+
+			// This IRQ is disabled
+			if ((0x8000 >> i) & ~mask) { return ; }
+
+			// Set pending IRQ to fire
+			this._cpureg[0x73 + (i >> 3)] |= 0x80 >> (i & 7);
 		}
 
 		system.prototype.init = function () {
@@ -93,6 +114,9 @@ module.exports = (function(){
 			for (var i = 0; i < 0x40; i ++) {
 				this.rom(i + 0xC0, new Uint8Array(this.bios, i << 8, 0x100));
 			}
+
+			this._readbank[0xFFFE] = function () { return this._irqs[this._setirq[this.pending_irq()]] & 0xFF; }
+			this._readbank[0xFFFF] = function () { return this._irqs[this._setirq[this.pending_irq()]] >> 8; }
 
 			// Bankable rom
 			this.set_rom_page(0);	// Clear current rom page

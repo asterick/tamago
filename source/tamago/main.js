@@ -59,8 +59,7 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.irq = function (e) {
-		this.system.map_irq(parseInt(this.body.selects.irq.value,10));
-		this.system.irq();
+		this.system.fire_irq(parseInt(this.body.selects.irq.value,10));
 		this.refresh();
 	}
 
@@ -84,10 +83,10 @@ module.exports = (function() {
 
 			q = (q + 1) % 10;
 				
-			that.system.map_irq(10); that.system.irq();
+			that.system.fire_irq(10);
 
 			if (that.system._cpureg[0x71]) {
-				if (!q) { that.system.map_irq(13); that.system.irq(); }
+				if (!q) { that.system.fire_irq(13); }
 			}
 			
 			if (that.system._cpureg[0x76]) {

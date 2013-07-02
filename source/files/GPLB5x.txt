@@ -77,23 +77,23 @@ PORT B
 IRQ Vector Table
 ================
 TM0
-NoService
-NoService
+(NoService)
+(NoService)
 2048
 8192
 SPU
 SPI
 FP (LCD Frame)
-NoService
-NoService
+(NoService)
+(NoService)
 TM1
-NoService
+(NoService)
 TBH
 TBL
-NoService
-NoService
+(NoService)
+(NoService)
 
 NMI Vectors
 ===========
 LV Detect
-TIMER1
+TM1
