@@ -8,21 +8,20 @@ module.exports = (function () {
 		this.set_rom_page(value);
 	}
 
-	
-	// PortA
+	// ==== PortA ====
 	function write_porta_dir_data(reg, value) {
-		// TODO
+		// no writes yet.
 	}
 
 	function read_porta_data(reg, value) {
 		var mask = this._cpureg[0x11],
 			input = 
 				this._keys;
-		
+
 		return (mask & this._cpureg[0x12]) | (~mask & input);
 	}
 
-	// PortB
+	// ==== PortB ====
 	function write_portb_dir_data(reg, value) {
 		var mask = this._cpureg[0x15],
 			d = mask & this._cpureg[0x16];
@@ -44,14 +43,13 @@ module.exports = (function () {
 
 	// Default register actions
 	function undef_read(reg) {
-		/*
 		console.log(
 			pad(this._cpureg[0].toString(16), 2),
 			this.pc.toString(16),
 			"Unhandled register read  (" + (0x3000+reg).toString(16) + ")", 
 			"             ", 
 			ports[reg|0x3000] || "---");
-		*/
+
 		return this._cpureg[reg];
 	}
 
@@ -67,7 +65,7 @@ module.exports = (function () {
 	}
 
 	var register_layout = {
-		 "0x00": { write: write_bank },
+		"0x00": { write: write_bank },
 		"0x11": { write: write_porta_dir_data },
 		"0x12": { write: write_porta_dir_data, read: read_porta_data },
 		"0x15": { write: write_portb_dir_data },
