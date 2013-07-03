@@ -32,8 +32,9 @@ module.exports = (function(){
 		this.init();
 		this.reset();
 
-		this.cycles_error = 0;
 		this.previous_clock = 0;
+		
+		this._tbh_timer = 0; 	// HACK 
 
 		document.addEventListener("keyup", function (e) {
 			that._keys |= that.mapping[e.keyCode] || 0;
@@ -48,7 +49,7 @@ module.exports = (function(){
 		object.extend(system.prototype, registers);
 
 		system.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
-		system.prototype.CLOCK_RATE = 4000000;
+		system.prototype.CLOCK_RATE = 4000000; // 4MHz
 		system.prototype.MAX_ADVANCE = 1;
 		system.prototype.LCD_ORDER = [
 			0x0C0, 0x0CC, 0x0D8, 0x0E4, 
@@ -62,14 +63,26 @@ module.exports = (function(){
 
 		system.prototype.step_realtime = function () {
 			var t = +new Date() / 1000,
-				d = Math.min(this.MAX_ADVANCE, t - this.previous_clock) || 0,
-				a = this.cycles_error + (this.CLOCK_RATE * d),
-				o = Math.floor(a);
+				d = Math.min(this.MAX_ADVANCE, t - this.previous_clock) || 0;
 
 			this.previous_clock = t;
-			this.cycles += o;
-			this.cycles_error = a - o;
-			
+			this.cycles += this.CLOCK_RATE * d;
+
+			var ticks = Math.floor(this.cycles);
+
+			this._tbh_timer += ticks;
+
+			// Animation rate counter (HACk)
+			var TBH_RATE = this.CLOCK_RATE / 2;
+			while (this._tbh_timer >= TBH_RATE) {
+				this.fire_irq(13);
+				this._tbh_timer -= TBH_RATE;
+			}
+
+			// Fire every frame (rate unknown, HACK)
+			this.fire_irq(10);
+			this.fire_nmi(6);
+
 			while(this.cycles > 0) { this.step(); }
 		}
 

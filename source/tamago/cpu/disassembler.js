@@ -152,7 +152,11 @@ module.exports = (function(){
 
 			output.bytes = []
 			while (pos < address) {
-				output.bytes.push(config.toHex(2, cpu.read(pos++)));
+				var int = cpu.read(pos++).toString(16).toUpperCase();
+
+				while (int.length < 2) { int = "0" + int; }
+
+				output.bytes.push(int);
 			}
 			output.bytes = output.bytes.join(" ");
 

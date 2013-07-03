@@ -6,13 +6,23 @@ module.exports = (function() {
 
 		object = require("util/object.js"),
 		ejs = require("util/ejs.js"),
-		mainTemplate = requireText("tamago/templates/main.html"),
-		portTemplate = requireText("tamago/templates/port.html");
+		
+		mainTemplate, portTemplate;
 
 	ready(function () {
-		mainTemplate = ejs.parse(mainTemplate);
-		portTemplate = ejs.parse(portTemplate);
+		// compile our templates
+		mainTemplate = ejs.parse(requireText("tamago/templates/main.html"));
+		portTemplate = ejs.parse(requireText("tamago/templates/port.html"));
 	})
+
+	function toHex(w, i) { 
+		i = i.toString(16).toUpperCase();
+
+		var zeros = "0";
+		while (zeros.length < w) { zeros += zeros; }
+
+		return zeros.substr(0, w).substr(i.length) + i;
+	}
 
 	function start(bios) {
 		var xhr = new XMLHttpRequest();
@@ -74,21 +84,12 @@ module.exports = (function() {
 	Tamago.prototype.run = function (e) {
 		var that = this;
 
-		var q = 30;
-
 		function frame() {
+			if (!that.running) { return ; }
+
 			that.system.step_realtime();
 			that.refresh();
-
-			if (that.running) {
-				requestAnimationFrame(frame);
-			}
-
-			q = (q + 1) % 10;
-				
-			that.system.fire_irq(10);
-			if (!q) { that.system.fire_irq(13); }
-			if (!q) { that.system.fire_nmi(6); }
+			requestAnimationFrame(frame);
 		}
 
 		this.running = !this.running;	
@@ -180,7 +181,7 @@ module.exports = (function() {
 
 		// Update basic views
 		object.each(this.body.registers, function (elem, register) {
-			elem.innerHTML = config.toHex(2, that.system[register]);
+			elem.innerHTML = toHex(2, that.system[register]);
 		});
 
 		object.each(this.body.flags, function (elem, flag) {
@@ -188,15 +189,15 @@ module.exports = (function() {
 		});
 
 		this.body.memory.forEach(function (m, i) {
-			m.innerHTML = config.toHex(2, that.system._wram[i]);
+			m.innerHTML = toHex(2, that.system._wram[i]);
 		});
 
 		this.body.control.forEach(function (m, i) {
 			var acc = that.system._cpuacc[i+0x3000];
-			//that.system._cpuacc[i+0x3000] = 0;
+			that.system._cpuacc[i+0x3000] = 0;
 			m.classList.toggle('read', acc & tamagotchi.ACCESS_READ);
 			m.classList.toggle('write', acc & tamagotchi.ACCESS_WRITE);
-			m.innerHTML = config.toHex(2, that.system._cpureg[i]);
+			m.innerHTML = toHex(2, that.system._cpureg[i]);
 		});
 
 
@@ -216,7 +217,7 @@ module.exports = (function() {
 		disasm.forEach(function (g, i) {
 			var row = that.body.instructions[i];
 
-			row.location.innerHTML = config.toHex(4, g.location)
+			row.location.innerHTML = toHex(4, g.location)
 			row.opcode.innerHTML = g.instruction;
 			row.addressing.innerHTML = ((g.data === null) ? "" : g.data).toString(16).toUpperCase();
 			row.data.innerHTML = g.bytes;
@@ -250,6 +251,7 @@ module.exports = (function() {
 		var data = Object.create(config),
 			that = this;
 
+		data.toHex = toHex;
 		data.ramBytes = this.system._wram.length;
 		data.registerBytes = this.system._cpureg.length;
 
@@ -312,6 +314,9 @@ module.exports = (function() {
 			// Start running soon
 			setTimeout(function() { that.run(); }, 10);
 		}
+
+		// Temporary
+		this.refresh = this.refresh_simple;
 	};
 
 	return {
