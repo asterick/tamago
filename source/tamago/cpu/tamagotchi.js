@@ -48,6 +48,8 @@ module.exports = (function(){
 		system.prototype = Object.create(r6502.r6502);	
 		object.extend(system.prototype, registers);
 
+		system.prototype.PALETTE = [0xffdddddd, 0xff9e9e9e, 0xff606060, 0xff222222];
+
 		system.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
 		system.prototype.CLOCK_RATE = 4000000; // 4MHz
 		system.prototype.MAX_ADVANCE = 1;

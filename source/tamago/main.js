@@ -64,8 +64,6 @@ module.exports = (function() {
 		this.refresh();
 	}
 
-	Tamago.prototype.palette = [0xFFEEEEEE,0xFFA4A4A4,0xFF5A5A5A,0xFF111111];
-
 	Tamago.prototype.step = function (e) {
 		this.system.step();
 		this.refresh();
@@ -110,7 +108,7 @@ module.exports = (function() {
 			var glyph = (this.system._dram[a] >> b) & 3;
 			if ((b -= 2) < 0) { b = 6; a++; }
 
-			this.body.glyphs[g++].style.color = "#" + (this.palette[glyph] & 0xFFFFFF).toString(16);
+			this.body.glyphs[g++].style.color = "#" + (this.system.PALETTE[glyph] & 0xFFFFFF).toString(16);
 		}
 
 		var px = 0;
@@ -121,7 +119,7 @@ module.exports = (function() {
 				var d = this.system._dram[a++], b = 6;
 
 				while (b >= 0) {
-					this._pixels[px++] = this.palette[(d >> b) & 3];
+					this._pixels[px++] = this.system.PALETTE[(d >> b) & 3];
 					b -= 2;
 				}
 			}
