@@ -67,7 +67,7 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.nmi = function (e) {
-		this.system.nmi(6);
+		this.system.fire_nmi(6);
 		this.refresh();
 	}
 

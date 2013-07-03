@@ -22,7 +22,8 @@ module.exports = (function () {
 	function read_porta_data(reg, value) {
 		var mask = this._cpureg[0x11],
 			input = 
-				this._keys;
+				this._keys |
+				0xF0;
 
 		return (mask & this._cpureg[0x12]) | (~mask & input);
 	}
@@ -75,7 +76,8 @@ module.exports = (function () {
 	var register_layout = {
 		0x00: { write: write_bank },
 		0x01: {}, // SILENCE CLK CTRL
-		
+		0x04: {}, // SILENCE
+
 		// --- DATA Ports
 		0x10: {}, // SILENCE CONFIG
 		0x11: { write: write_porta_dir_data },
