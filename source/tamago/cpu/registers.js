@@ -21,9 +21,7 @@ module.exports = (function () {
 
 	function read_porta_data(reg, value) {
 		var mask = this._cpureg[0x11],
-			input = 
-				this._keys |
-				0xF0;
+			input = this._keys;
 
 		return (mask & this._cpureg[0x12]) | (~mask & input);
 	}
