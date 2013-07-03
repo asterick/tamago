@@ -1,3 +1,5 @@
 .DS_Store
 .sass-cache
+source/tamago.release.js
+source/style
 node_modules
