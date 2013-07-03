@@ -299,7 +299,6 @@ module.exports = (function() {
 			};
 
 			document.querySelector("select[action=figure]").addEventListener("change", function(e) {
-				debugger ;
 				that.system.inserted_figure = Number(e.target.value);
 			});
 
