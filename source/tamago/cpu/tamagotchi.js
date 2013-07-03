@@ -74,8 +74,9 @@ module.exports = (function(){
 		}
 
 		system.prototype.fire_nmi = function (i) {
-			debugger ;
-			// TODO: FILTER 
+			// NMI was not enabled
+			if (~this._cpureg[0x76] & (0x80 >> i)) { return ; }
+
 			this.nmi();
 		}
 

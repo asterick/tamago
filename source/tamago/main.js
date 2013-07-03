@@ -87,16 +87,8 @@ module.exports = (function() {
 			q = (q + 1) % 10;
 				
 			that.system.fire_irq(10);
-
-			if (that.system._cpureg[0x71]) {
-				if (!q) { 
-					that.system.fire_irq(13);
-				}
-			}
-			
-			if (that.system._cpureg[0x76]) {
-				if (!q) { that.system.nmi(); }
-			}
+			if (!q) { that.system.fire_irq(13); }
+			if (!q) { that.system.fire_nmi(6); }
 		}
 
 		this.running = !this.running;	
@@ -143,18 +135,23 @@ module.exports = (function() {
 		}
 	
 		var port = ports[this._debug_port];
-		if (port) {
-			port = Object.create(port);
-			port.address = this._debug_port.toString(16);
-
-			if (port.address.length < 2) port.address = "0" + port.address;
-
-			this.body.port.innerHTML = portTemplate(port);
-			this.body.fields = this.body.port.querySelectorAll("field");
-		} else {
-			this.body.port.innerHTML = "<h1>Unknown port</h1>";
-			this.body.fields = [];
+		if (!port) {
+			port = {
+				name: "Unknown",
+				description: "",
+			}
 		}
+		if (!port.fields) {
+			port.fields = [{ name:"data", start: 0, length: 8 }];
+		}
+
+		port = Object.create(port);
+		port.address = this._debug_port.toString(16);
+
+		if (port.address.length < 2) port.address = "0" + port.address;
+
+		this.body.port.innerHTML = portTemplate(port);
+		this.body.fields = this.body.port.querySelectorAll("field");
 		
 		this.refresh_port();
 	}
@@ -196,7 +193,7 @@ module.exports = (function() {
 
 		this.body.control.forEach(function (m, i) {
 			var acc = that.system._cpuacc[i+0x3000];
-			that.system._cpuacc[i+0x3000] = 0;
+			//that.system._cpuacc[i+0x3000] = 0;
 			m.classList.toggle('read', acc & tamagotchi.ACCESS_READ);
 			m.classList.toggle('write', acc & tamagotchi.ACCESS_WRITE);
 			m.innerHTML = config.toHex(2, that.system._cpureg[i]);

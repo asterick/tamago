@@ -88,7 +88,8 @@ module.exports = (function () {
 		0x70: {}, // IRQ Enables are normal 
 		0x71: {}, // IRQ Enables are normal 
 		0x73: { write: write_int_flag },
-		0x74: { write: write_int_flag }
+		0x74: { write: write_int_flag },
+		0x76: {}, // NMI Enables are normal
 	}, undef_register = {
 		read: undef_read, 
 		write: undef_write 

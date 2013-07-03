@@ -197,7 +197,7 @@ tamago[debugger] {
 
 	port {
 		display: block;
-		height: 12em;
+		height: 13em;
 		overflow: hidden;
 
 		h1, h2 {
@@ -219,10 +219,15 @@ tamago[debugger] {
 
 		field {
 			display: block;
+			
+			range {
+				display: inline-block;
+				min-width: 6ex;
+			}
 
 			bin, hex {
 				display: inline-block;
-				padding: 1ex;
+				padding: 0 1ex;
 			}
 
 			bin {
@@ -235,7 +240,7 @@ tamago[debugger] {
 
 			&:before {
 				display: inline-block;
-				min-width: 10ex;
+				min-width: 16ex;
 				content: attr(name);
 				font-weight: bold;
 			}
@@ -246,7 +251,7 @@ tamago[debugger] {
 	}
 
 	memory {
-		height: 43em;
+		height: 42em;
 	}
 
 	control {
