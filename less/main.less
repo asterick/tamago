@@ -1,8 +1,8 @@
-$padding-small: 2px;
-$padding-wide: 10px;
+@padding-small: 2px;
+@padding-wide: 10px;
 
 body {
-	background: $white;
+	background: @white;
 	font-family: monospace;
 	font-size: 14px;
 }
@@ -11,7 +11,7 @@ tamago[debugger] {
 	display: block;
 
 	position: relative;
-	color: $black;
+	color: @black;
 
 	column {
 		display: inline-block;
@@ -29,9 +29,9 @@ tamago[debugger] {
 		padding: 20px;
 
 		canvas {
-			border: 2px solid $pink;
+			border: 2px solid @pink;
 			display: inline-block;
-			background: $light-grey;
+			background: @light-grey;
 
 			width:  192px;
 			height: 124px;
@@ -44,7 +44,7 @@ tamago[debugger] {
 		registers {
 			width: 28ex;
 			display: block;
-			padding: $padding-wide;
+			padding: @padding-wide;
 
 			&:before {
 				content: "Registers";
@@ -59,13 +59,13 @@ tamago[debugger] {
 					text-align: right;
 					content: attr(name);
 					width:	 32px;
-					padding: $padding-small $padding-wide;
+					padding: @padding-small @padding-wide;
 				}
 			}
 		}
 		flags {
 			display: block;
-			padding: $padding-wide;
+			padding: @padding-wide;
 			text-align: center;
 
 			&:before {
@@ -77,15 +77,15 @@ tamago[debugger] {
 				display: inline-block;
 				position: relative;
 				min-width: 16px;
-				padding: $padding-small;
+				padding: @padding-small;
 
 				&:after {
 					@include icon-FontAwesome();
-					content: $check-empty;
+					content: @check-empty;
 					display:block;
 				}
 				&.active:after {
-					content: $check;
+					content: @check;
 				}
 
 				&:before {
@@ -107,18 +107,18 @@ tamago[debugger] {
 			height: 1em;
 
 			&.active {
-				background: $green;
+				background: @green;
 			}
 
 			* { margin: 0; padding: 0 1ex; }
 
 			location {
-				color: $bright-orange;
+				color: @bright-orange;
 				display: inline-block;
 				width: 4ex;
 			}
 			opcode {
-				color: $blue-green-2;
+				color: @blue-green-2;
 				display: inline-block;
 				width: 3ex;
 			}
@@ -126,26 +126,26 @@ tamago[debugger] {
 			data {
 				display: inline-block;
 				width: 16ex;
-				color: $purple;
+				color: @purple;
 			}
 
 			addressing {
-				color: $blue-2;
+				color: @blue-2;
 				display: inline-block;
 				width: 16ex;
 
 				// Prefix immediate values
 				&:before, &:after {
-					color: $red-2;
+					color: @red-2;
 					display: inline;
 				}
 
 				&[mode=immediate] {
-					&:before { content: "#$"; }
+					&:before { content: "#@"; }
 				}
 
 				&[mode=absolute], &[mode=absoluteX], &[mode=absoluteY], &[mode=zeropage], &[mode=zeropageX], &[mode=zeropageY] {
-					&:before { content: "$"; }
+					&:before { content: "@"; }
 				}
 
 				&[mode=indirect], &[mode=indirectX], &[mode=indirectY] {
@@ -178,19 +178,19 @@ tamago[debugger] {
 			}
 
 			&[port]:after {
-				color: $green-2;
+				color: @green-2;
 				content: "; " attr(port);
 				text-align: left;
 			}
 
 			&:nth-child(even) {
-				background: $white;
+				background: @white;
 			}
 			&:nth-child(odd) {
-				background: $light-grey;
+				background: @light-grey;
 			}
 			&.active {
-				background: $yellow;
+				background: @yellow;
 			}
 		}
 	}
@@ -267,10 +267,10 @@ tamago[debugger] {
 			display: block;
 			
 			&:nth-child(even) {
-				background: $white;
+				background: @white;
 			}
 			&:nth-child(odd) {
-				background: $light-grey;
+				background: @light-grey;
 			}
 
 			address {
@@ -286,15 +286,15 @@ tamago[debugger] {
 				margin: 0;
 
 				&:nth-child(even) {
-					color: $blue-2;
+					color: @blue-2;
 				}
 				&:nth-child(odd) {
-					color: $blue;
+					color: @blue;
 				}
 
-				&.read { background: $red-2; color: $white; }
-				&.write { background: $green-2; color: $white; }
-				&.read.write { background: $yellow-2; color: $white; }
+				&.read { background: @red-2; color: @white; }
+				&.write { background: @green-2; color: @white; }
+				&.read.write { background: @yellow-2; color: @white; }
 			}
 		}
 	}

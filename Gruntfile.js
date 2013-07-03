@@ -2,20 +2,20 @@ var fs = require("fs");
 
 module.exports = function(grunt) {
 	grunt.initConfig({
-		sass: {
+		less: {
 			dev: {
 				options: {
 					style: 'expanded'
 				},
 				files: {
-					'source/style/runtime.css': 'sass/runtime.scss'
+					'source/style/runtime.css': 'less/runtime.less'
 				}
 			}
 		},
 		watch: {
-			sass: {
-				files: ["sass/**/*"],
-				tasks: ["sass"]
+			less: {
+				files: ["less/**/*"],
+				tasks: ["less"]
 			}
 		},
 		connect: {
@@ -67,8 +67,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("modules");
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-contrib-less');
 
 	grunt.registerTask("default", ["modules"]);
-	grunt.registerTask("dev", ["connect", "sass", "watch"]);
+	grunt.registerTask("dev", ["connect", "less", "watch"]);
 };

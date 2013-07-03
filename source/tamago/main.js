@@ -314,9 +314,6 @@ module.exports = (function() {
 			// Start running soon
 			setTimeout(function() { that.run(); }, 10);
 		}
-
-		// Temporary
-		this.refresh = this.refresh_simple;
 	};
 
 	return {
