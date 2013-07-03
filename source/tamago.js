@@ -1,4 +1,5 @@
-var tamago = require("tamago/main.js");
+var tamago = require("tamago/main.js"),
+    eeprom = require("tamago/cpu/eeprom.js");
 
 (function() {
     var lastTime = 0;

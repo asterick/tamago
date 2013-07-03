@@ -11,10 +11,10 @@ module.exports = (function(){
 		this.a = 0;
 		this.x = 0;
 		this.y = 0;
-		this.pc = this.read_16(0xFFFC);
 		this.s = 0;
 		this.p = 0;
 		this.cycles = 0;
+		this.pc = this.read_16(0xFFFC);
 
 		object.each(instructions, function(op, code) {
 			ops[code] = {
