@@ -33,6 +33,7 @@ module.exports = (function(){
 		this.reset();
 
 		this.previous_clock = 0;
+		this.inserted_figure = 0;
 		
 		this._tbh_timer = 0; 	// HACK 
 
@@ -80,8 +81,6 @@ module.exports = (function(){
 				this.fire_irq(13);
 				this._tbh_timer -= TBH_RATE;
 			}
-
-			this.inserted_figure = 0;
 
 			// Fire every frame (rate unknown, HACK)
 			this.fire_irq(10);
