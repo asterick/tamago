@@ -298,6 +298,10 @@ module.exports = (function() {
 				display: element.querySelector("display canvas").getContext("2d")
 			};
 
+			document.querySelector("select[action=figure]").addEventListener("change", function(e) {
+				that.system.inserted_figure = Number(e.target.value);
+			});
+
 			this._debug_port = 0x3000;
 			this.update_control();
 

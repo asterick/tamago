@@ -81,6 +81,8 @@ module.exports = (function(){
 				this._tbh_timer -= TBH_RATE;
 			}
 
+			this.inserted_figure = 0;
+
 			// Fire every frame (rate unknown, HACK)
 			this.fire_irq(10);
 			this.fire_nmi(6);
