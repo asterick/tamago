@@ -1454,10 +1454,15 @@ tamago[debugger] cpu flags flag {
   padding: 2px;
 }
 tamago[debugger] cpu flags flag:after {
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+  *margin-right: .3em;
   content: "\f096";
   display: block;
 }
-@include icon-FontAwesome();
 tamago[debugger] cpu flags flag.active:after {
   content: "\f046";
 }
