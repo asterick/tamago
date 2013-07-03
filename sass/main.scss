@@ -4,6 +4,7 @@ $padding-wide: 10px;
 body {
 	background: $white;
 	font-family: monospace;
+	font-size: 14px;
 }
 
 tamago[debugger] {
@@ -194,8 +195,58 @@ tamago[debugger] {
 		}
 	}
 
+	port {
+		display: block;
+		height: 12em;
+		overflow: hidden;
+
+		h1, h2 {
+			font-size: 14px;
+			margin: 0;
+			width: 100%;
+		}
+		
+		h1 {
+			padding-top: 1ex;
+			font-weight: bold;
+			text-decoration: underline
+		}
+		h2 {
+			padding-bottom: 1ex;
+			font-weight: normal;
+			font-style: italic;
+		}
+
+		field {
+			display: block;
+
+			bin, hex {
+				display: inline-block;
+				padding: 1ex;
+			}
+
+			bin {
+				min-width: 8ex;
+			}
+
+			hex {
+				min-width: 2ex;
+			}
+
+			&:before {
+				display: inline-block;
+				min-width: 10ex;
+				content: attr(name);
+				font-weight: bold;
+			}
+			&:last-child {
+				padding-bottom: 1ex;
+			}
+		}
+	}
+
 	memory {
-		height: 55em;
+		height: 43em;
 	}
 
 	control {

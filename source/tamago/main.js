@@ -2,13 +2,16 @@ module.exports = (function() {
 	var config = require ("tamago/config.js"),
 		tamagotchi = require("tamago/cpu/tamagotchi.js"),
 		disassemble = require("tamago/cpu/disassembler.js"),
-		
+		ports = require("tamago/data/ports.js"),
+
 		object = require("util/object.js"),
 		ejs = require("util/ejs.js"),
-		template = requireText("tamago/templates/main.html");
+		mainTemplate = requireText("tamago/templates/main.html"),
+		portTemplate = requireText("tamago/templates/port.html");
 
 	ready(function () {
-		template = ejs.parse(template);
+		mainTemplate = ejs.parse(mainTemplate);
+		portTemplate = ejs.parse(portTemplate);
 	})
 
 	function start(bios) {
@@ -44,8 +47,8 @@ module.exports = (function() {
 
 		this.configure(element);
 
-		this._pixeldata = this.body.display.getImageData(0,0,64,31),
-		this._pixels = new Uint32Array(this._pixeldata.data.buffer)
+		this._pixeldata = this.body.display.getImageData(0,0,64,31);
+		this._pixels = new Uint32Array(this._pixeldata.data.buffer);
 		this._disasmOffset = 0;
 
 		this.refresh();
@@ -134,6 +137,47 @@ module.exports = (function() {
 		this.body.display.putImageData(this._pixeldata, 0, 0);
 	}
 
+	Tamago.prototype.update_control = function (e) {
+		if (e) {
+			this._debug_port = parseInt(e.target.dataset.address);
+		}
+	
+		var port = ports[this._debug_port];
+		if (port) {
+			port = Object.create(port);
+			port.address = this._debug_port.toString(16);
+
+			if (port.address.length < 2) port.address = "0" + port.address;
+
+			this.body.port.innerHTML = portTemplate(port);
+			this.body.fields = this.body.port.querySelectorAll("field");
+		} else {
+			this.body.port.innerHTML = "<h1>Unknown port</h1>";
+			this.body.fields = [];
+		}
+		
+		this.refresh_port();
+	}
+
+	Tamago.prototype.refresh_port = function () {
+		var d = this.system.read(this._debug_port);
+
+		function pad(s, l) {
+			return "00000000".substr(0, l).substr(s.length) + s;
+		}
+
+		[].forEach.call(this.body.fields, function (f) {
+			var l = Number(f.dataset.length),
+				s = Number(f.dataset.start),
+				m = (d >> s) & ((1 << l) - 1),
+				b = f.querySelector("bin"),
+				h = f.querySelector("hex");
+
+			b.innerHTML = pad(m.toString(2), l);
+			h.innerHTML = pad(m.toString(16), Math.ceil(l / 4));
+		})
+	}
+
 	Tamago.prototype.refresh_debugger = function () {
 		var that = this;
 
@@ -201,6 +245,7 @@ module.exports = (function() {
 			row.addressing.removeAttribute('mode');
 		}
 
+		this.refresh_port();
 		this.refresh_simple();
 	}
 
@@ -213,17 +258,17 @@ module.exports = (function() {
 
 		data.debug = Boolean(element.attributes.debugger);
 
-		element.innerHTML = template(data);
+		element.innerHTML = mainTemplate(data);
 
 		// Bind to HTML
 		if (data.debug) {
-
 			[].forEach.call(document.querySelectorAll("input[type=button]"), function (el) {
 				el.addEventListener("click", that[el.attributes.action.value].bind(that))
 			});
 
 			this.body = {
 				glyphs: element.querySelectorAll("i.glyph"),
+				port: element.querySelector("port"),
 				selects: [].reduce.call(element.querySelectorAll("select"), function (acc, f) { 
 					acc[f.attributes.action.value.toLowerCase()] = f;
 					return acc; 
@@ -246,6 +291,8 @@ module.exports = (function() {
 					};
 				}),
 				control: [].map.call(element.querySelectorAll("control byte"), function (b) {
+					b.addEventListener("click", that.update_control.bind(that));
+
 					return b;
 				}),
 				memory: [].map.call(element.querySelectorAll("memory byte"), function (b) {
@@ -253,6 +300,10 @@ module.exports = (function() {
 				}),
 				display: element.querySelector("display canvas").getContext("2d")
 			};
+
+			this._debug_port = 0x3000;
+			this.update_control();
+
 			this.refresh = this.refresh_debugger;
 		} else {
 			this.body = { 

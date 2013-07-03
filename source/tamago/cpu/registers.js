@@ -73,18 +73,22 @@ module.exports = (function () {
 	}
 
 	var register_layout = {
-		"0x00": { write: write_bank },
-		"0x01": {}, // SILENCE CLK CTRL
-		"0x10": {},	// SILENCE CONFIG
-		"0x11": { write: write_porta_dir_data },
-		"0x12": { write: write_porta_dir_data, read: read_porta_data },
-		"0x14": {},	// SILENCE CONFIG
-		"0x15": { write: write_portb_dir_data },
-		"0x16": { write: write_portb_dir_data, read: read_portb_data },
-		"0x70": {},
-		"0x71": {},
-		"0x73": { write: write_int_flag },
-		"0x74": { write: write_int_flag }
+		0x00: { write: write_bank },
+		0x01: {}, // SILENCE CLK CTRL
+		
+		// --- DATA Ports
+		0x10: {}, // SILENCE CONFIG
+		0x11: { write: write_porta_dir_data },
+		0x12: { write: write_porta_dir_data, read: read_porta_data },
+		0x14: {}, // SILENCE CONFIG
+		0x15: { write: write_portb_dir_data },
+		0x16: { write: write_portb_dir_data, read: read_portb_data },
+
+		// --- IRQ Block
+		0x70: {}, // IRQ Enables are normal 
+		0x71: {}, // IRQ Enables are normal 
+		0x73: { write: write_int_flag },
+		0x74: { write: write_int_flag }
 	}, undef_register = {
 		read: undef_read, 
 		write: undef_write 
@@ -92,11 +96,6 @@ module.exports = (function () {
 
 	return {
 		map_registers: function () {
-			object.each(register_layout, function (v, k, o) {
-				o[Number(k)] = v;
-				delete o[k];
-			});
-
 			// Start mapping out registers
 			for (var i = 0; i < 0x100; i++) {
 				// This is normally considered dangerous, but I need the closure
