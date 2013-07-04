@@ -141,11 +141,11 @@ tamago[debugger] {
 				}
 
 				&[mode=immediate] {
-					&:before { content: "#@"; }
+					&:before { content: "#$"; }
 				}
 
 				&[mode=absolute], &[mode=absoluteX], &[mode=absoluteY], &[mode=zeropage], &[mode=zeropageX], &[mode=zeropageY] {
-					&:before { content: "@"; }
+					&:before { content: "$"; }
 				}
 
 				&[mode=indirect], &[mode=indirectX], &[mode=indirectY] {

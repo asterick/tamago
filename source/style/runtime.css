@@ -1513,7 +1513,7 @@ tamago[debugger] disassembly instruction addressing:after {
   display: inline;
 }
 tamago[debugger] disassembly instruction addressing[mode=immediate]:before {
-  content: "#@";
+  content: "#$";
 }
 tamago[debugger] disassembly instruction addressing[mode=absolute]:before,
 tamago[debugger] disassembly instruction addressing[mode=absoluteX]:before,
@@ -1521,7 +1521,7 @@ tamago[debugger] disassembly instruction addressing[mode=absoluteY]:before,
 tamago[debugger] disassembly instruction addressing[mode=zeropage]:before,
 tamago[debugger] disassembly instruction addressing[mode=zeropageX]:before,
 tamago[debugger] disassembly instruction addressing[mode=zeropageY]:before {
-  content: "@";
+  content: "$";
 }
 tamago[debugger] disassembly instruction addressing[mode=indirect]::before,
 tamago[debugger] disassembly instruction addressing[mode=indirectX]::before,

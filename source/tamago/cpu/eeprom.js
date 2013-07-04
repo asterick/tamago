@@ -1,4 +1,6 @@
 module.exports = (function(){
+	var object = require("util/object.js");
+
 	var DISABLED = 0,
 		COMMAND = 1,
 		ADDRESS = 2,
@@ -10,7 +12,13 @@ module.exports = (function(){
 		var byte_size = 1 << bit_width;
 
 		// Initalize eeprom data (4kB by default)
-		this.data = new Uint8Array(byte_size);
+		try {
+			this.data = JSON.parse(window.localStorage.eeprom_data);
+		} catch(e) {
+			this.data = object.fill(byte_size, 0);
+		}
+
+		
 		this.address_width = Math.ceil(bit_width / 8);
 		this._mask = (1 << bit_width) - 1;
 
@@ -49,6 +57,10 @@ module.exports = (function(){
 		// Data transition while CLK is high
 		if (clk && data_d) {
 			if (data_d > 0) { 
+				if (this._state === WRITE && window.localStorage) {
+					window.localStorage.eeprom_data = JSON.stringify(this.data);
+				}
+
 				// Stop
 				this._state = DISABLED;
 				this._output = 0;
@@ -106,7 +118,7 @@ module.exports = (function(){
 					break ;
 				case WRITE:
 					this._address &= this._mask;
-					this.data[this._address++] = this._read;
+					this.data[this._address++] = this._read & 0xFF;
 					break ;
 				}
 
