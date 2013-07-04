@@ -23,9 +23,7 @@ module.exports = (function () {
 		var mask = this._cpureg[0x11],
 			value = this._cpureg[0x12],
 			spi_power = mask & value & 0x10,
-			input = this._keys | ((spi_power ? this.inserted_figure : 0) << 5);
-
-
+			input = this._keys | ((spi_power ? 0 : this.inserted_figure) << 5);
 
 		return (mask & value) | (~mask & input);
 	}
