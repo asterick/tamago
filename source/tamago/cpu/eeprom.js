@@ -13,7 +13,9 @@ module.exports = (function(){
 
 		// Initalize eeprom data (4kB by default)
 		try {
-			this.data = JSON.parse(window.localStorage.eeprom_data);
+			this.data = window.localStorage.eeprom_data.match(/../g).map(function(v){
+				return parseInt(v,16);
+			});
 		} catch(e) {
 			this.data = object.fill(byte_size, 0);
 		}
@@ -55,7 +57,10 @@ module.exports = (function(){
 		if (clk && data_d) {
 			if (data_d > 0) { 
 				if (this.state === WRITE && window.localStorage) {
-					window.localStorage.eeprom_data = JSON.stringify(this.data);
+					window.localStorage.eeprom_data = 
+						this.data.map(function (v) {
+							return (0x100 | v).toString(16).substr(1);
+						}).join("");
 				}
 
 				// Stop
