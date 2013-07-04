@@ -156,7 +156,7 @@ module.exports = (function() {
 	}
 
 	Tamago.prototype.refresh_port = function () {
-		var d = this.system.read(this._debug_port);
+		var d = this.system.read(this._debug_port, true);
 
 		function pad(s, l) {
 			return "00000000".substr(0, l).substr(s.length) + s;

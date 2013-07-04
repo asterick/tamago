@@ -76,8 +76,9 @@ module.exports = (function () {
 
 	var register_layout = {
 		0x00: { write: write_bank },
-		0x01: {}, // SILENCE CLK CTRL
+		0x01: {}, // SILENCE
 		0x04: {}, // SILENCE
+		0x31: {}, // SILENCE
 
 		// --- DATA Ports
 		0x10: {}, // SILENCE CONFIG

@@ -141,13 +141,13 @@ module.exports = (function(){
 			this.set_rom_page(0);	// Clear current rom page
 		}
 
-		system.prototype.read = function(addr) {
+		system.prototype.read = function(addr, noack) {
 			// A addressing
 			if (addr === null) {
 				return this.a;
 			}
 
-			this._cpuacc[addr] |= ACCESS_READ;
+			if(!noack) this._cpuacc[addr] |= ACCESS_READ;
 
 			return this._readbank[addr].call(this, addr & 0xFF);
 		};

@@ -19,8 +19,12 @@ module.exports = {
 		description: "32kHZ Timer Control",
 	},
 	0x3004: { 
-		name: "Timer1 counter?",
+		name: "Watchdog Timer?",
 		description: "",
+	},
+	0x3006: {
+		name: "Sound Related?",
+		descripiption: "",
 	},
 	0x3007: { 
 		name: "P_Wakeup_Ctrl",
@@ -96,24 +100,28 @@ module.exports = {
 		]
 	},
 
+	0x3030: { 
+		name: "Timer Control 0?",
+		description: "",
+	},
 	0x3031: { 
-		name: "Timer Control ?",
+		name: "Timer Control 1?",
 		description: "",
 	},
 	0x3032: { 
-		name: "Timer Output 1?",
+		name: "Timer Output 0 low?",
 		description: "",
 	},
 	0x3033: { 
-		name: "Timer Output 2?",
+		name: "Timer Output 0 high?",
 		description: "",
 	},
 	0x3034: { 
-		name: "Timer Output 3? ",
+		name: "Timer Output 1 low?",
 		description: "",
 	},
 	0x3035: { 
-		name: "Timer Output 4?",
+		name: "Timer Output 1 high?",
 		description: "",
 	},
 	0x303E: { 
@@ -124,6 +132,7 @@ module.exports = {
 		name: "P_Seg8_Scan_Ctrl",
 		description: "",
 	},
+
 	0x3040: { 
 		name: "P_LCD_Setup1",
 		description: "",
@@ -152,6 +161,10 @@ module.exports = {
 		name: "P_LCD_Buffer_Ctrl",
 		description: "",
 	},
+	0x3048: {
+		name: "P_Contrast_Ctrl",
+		description: ""
+	},
 	0x3049: { 
 		name: "P_LCD_Pump_Ctrl",
 		description: "",
@@ -162,6 +175,10 @@ module.exports = {
 		description: ""
 	},
 	0x3062: {
+		name: "Sound Related?",
+		description: ""
+	},
+	0x3064: {
 		name: "Sound Related?",
 		description: ""
 	},
