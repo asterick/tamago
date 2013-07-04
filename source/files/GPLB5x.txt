@@ -53,7 +53,7 @@ PORT A
 4: SPI Power
 5: Cart CD1
 6: Cart CD2
-7: IR Rx (?)
+7: IR Rx
 
 PORT B
 ======
