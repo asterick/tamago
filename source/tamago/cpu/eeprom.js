@@ -18,11 +18,8 @@ module.exports = (function(){
 			this.data = object.fill(byte_size, 0);
 		}
 
-		
 		this.address_width = Math.ceil(bit_width / 8);
-		this._mask = (1 << bit_width) - 1;
-
-		// TODO: EEPROM SHOULD BE STORED SOMEWHERE
+		this.mask = (1 << bit_width) - 1;
 
 		this.update(false);
 	}
@@ -32,17 +29,17 @@ module.exports = (function(){
 		clk = clk ? 1 : 0;
 		data = data ? 1 : 0;
 
-		var clk_d = clk - this._last_clk,
-			data_d = data - this._last_data;
+		var clk_d = clk - this.last_clk,
+			data_d = data - this.last_data;
 
-
-		this._last_clk = clk;
-		this._last_data = data;
+		this.last_pow = power;
+		this.last_clk = clk;
+		this.last_data = data;
 
 		// This chip is not receiving power, so it is idle.
 		if (!power) {
-			this._state = DISABLED;
-			this._output = 1; // NACK
+			this.state = DISABLED;
+			this.output = 1; // NACK
 			return ;
 		}
 
@@ -57,80 +54,81 @@ module.exports = (function(){
 		// Data transition while CLK is high
 		if (clk && data_d) {
 			if (data_d > 0) { 
-				if (this._state === WRITE && window.localStorage) {
+				if (this.state === WRITE && window.localStorage) {
 					window.localStorage.eeprom_data = JSON.stringify(this.data);
 				}
 
 				// Stop
-				this._state = DISABLED;
-				this._output = 0;
+				this.state = DISABLED;
+				this.output = 0;
 			} else {
 				// Start
-				this._state = COMMAND;
-				this._output = 0;
+				this.state = COMMAND;
+				this.output = 0;
 
-				this._bits_tx = 0;
-				this._read = 0;
-				this._write = 0;
+				this.bits_tx = 0;
+				this.read = 0;
+				this.write = 0;
 			}
 		}
 
 		// We are not processing any data right now
-		if (this._state === DISABLED) { return ; }
+		if (this.state === DISABLED) { return ; }
 
 		if (clk_d > 0) {
 			// Rising edge clock (input)
-			this._read = ((this._read << 1) & 0xFF) | (data ? 1 : 0);
+			this.read = ((this.read << 1) & 0xFF) | (data ? 1 : 0);
 		} else if (clk_d < 0) {
 			// Falling edge (delivery)
-			if (this._bits_tx < 8) {
+			if (this.bits_tx < 8) {
 				// Simply update output buffer
-				this._output = (this._write & 0x80) ? 1 : 0;
-				this._write = this._write << 1;
-			} else if (this._bits_tx === 8) {
-				this._write = 0xFF;
+				this.output = (this.write & 0x80) ? 1 : 0;
+				this.write = this.write << 1;
+			} else if (this.bits_tx === 8) {
+				this.write = 0xFF;
 				// We have received a full command / output a value
-				switch (this._state) {
+				switch (this.state) {
 				case COMMAND:
-					switch(this._read & 0xF1) {
+					switch(this.read & 0xF1) {
 					case 0xA0: // Write
-						this._state = ADDRESS;
-						this._addressbyte = 0;
-						this._address = 0;
+						this.state = ADDRESS;
+						this.addressbyte = 0;
+						this.address = 0;
 						break ;
 					case 0xA1: // Read
-						this._state = READ;
-						this._address &= this._mask;
-						this._write = this.data[this._address++];
+						this.state = READ;
+						this.address &= this.mask;
+						this.write = this.data[this.address++];
 						break ;
 					}
 					break ;
 				case ADDRESS:
 					// Update address
-					this._address = (this._address << 8) | this._read;
-					if (++this._addressbyte >= this.address_width) {
-						this._state = WRITE;
+					this.address = (this.address << 8) | this.read;
+					if (++this.addressbyte >= this.address_width) {
+						this.state = WRITE;
 					}
 					break ;
 				case READ:
-					this._address &= this._mask;
-					this._write = this.data[this._address++];
+					this.address &= this.mask;
+					this.write = this.data[this.address++];
 					break ;
 				case WRITE:
-					this._address &= this._mask;
-					this.data[this._address++] = this._read & 0xFF;
+					this.address &= this.mask;
+					this.data[this.address++] = this.read & 0xFF;
 					break ;
 				}
 
-				this._output = 0; // ACK (always)
+				this.output = 0; // ACK (always)
 			}
 
-			this._bits_tx = (this._bits_tx + 1) % 9;
+			// Increment bit clock
+			this.bits_tx = (this.bits_tx + 1) % 9;
 		}
 	}
 
 	Object.defineProperty(eeprom.prototype, "output", {
-		get: function () { return this._output; }
+		get: function () { return this.output; }
 	})
 
 	return {

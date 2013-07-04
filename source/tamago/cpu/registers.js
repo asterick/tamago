@@ -31,10 +31,12 @@ module.exports = (function () {
 
 	// ==== PortB ====
 	function write_portb_dir_data(reg, value) {
-		var mask = this._cpureg[0x15],
-			d = mask & this._cpureg[0x16];
-		this._eeprom.update(d&4, d&2, d&1);
 		this._cpureg[reg] = value;
+
+		var mask = this._cpureg[0x15],
+			d = ~mask | this._cpureg[0x16];	// Values are pulled up
+
+		this._eeprom.update(d&4, d&2, d&1);
 	}
 
 	function read_portb_data(reg, value) {
