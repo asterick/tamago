@@ -34,10 +34,30 @@ module.exports = {
 	0x3011: { 
 		name: "P_PortA_Dir",
 		description: "",
+		fields: [
+			{ name:"IR Transmit", start: 7, length: 1 },
+			{ name:"Cart CD2", start: 6, length: 1 },
+			{ name:"Cart CD1", start: 5, length: 1 },
+			{ name:"Cart Power", start: 4, length: 1 },
+			{ name:"Reset", start: 3, length: 1 },
+			{ name:"C", start: 2, length: 1 },
+			{ name:"B", start: 1, length: 1 },
+			{ name:"A", start: 0, length: 1 }
+		]
 	},
 	0x3012: { 
 		name: "P_PortA_Data",
 		description: "",
+		fields: [
+			{ name:"IR Rx", start: 7, length: 1 },
+			{ name:"Cart CD2", start: 6, length: 1 },
+			{ name:"Cart CD1", start: 5, length: 1 },
+			{ name:"Cart Power", start: 4, length: 1 },
+			{ name:"Reset", start: 3, length: 1 },
+			{ name:"C", start: 2, length: 1 },
+			{ name:"B", start: 1, length: 1 },
+			{ name:"A", start: 0, length: 1 }
+		]
 	},
 	0x3013: { 
 		name: "P_PortA_Strobe",
@@ -50,10 +70,30 @@ module.exports = {
 	0x3015: { 
 		name: "P_PortB_Dir",
 		description: "",
+		fields: [
+			{ name:"SPI Rx", start: 7, length: 1 },
+			{ name:"SPI Tx", start: 6, length: 1 },
+			{ name:"SPI Clk", start: 5, length: 1 },
+			{ name:"SPI CSN", start: 4, length: 1 },
+			{ name:"IR Tx", start: 3, length: 1 },
+			{ name:"I2C Power", start: 2, length: 1 },
+			{ name:"I2C Clk", start: 1, length: 1 },
+			{ name:"I2C Data", start: 0, length: 1 }
+		]
 	},
 	0x3016: { 
 		name: "P_PortB_Data",
 		description: "",
+		fields: [
+			{ name:"SPI Rx", start: 7, length: 1 },
+			{ name:"SPI Tx", start: 6, length: 1 },
+			{ name:"SPI Clk", start: 5, length: 1 },
+			{ name:"SPI CSN", start: 4, length: 1 },
+			{ name:"IR Tx", start: 3, length: 1 },
+			{ name:"I2C Power", start: 2, length: 1 },
+			{ name:"I2C Clk", start: 1, length: 1 },
+			{ name:"I2C Data", start: 0, length: 1 }
+		]
 	},
 
 	0x3031: { 
@@ -115,6 +155,19 @@ module.exports = {
 	0x3049: { 
 		name: "P_LCD_Pump_Ctrl",
 		description: "",
+	},
+
+	0x3060: {
+		name: "Sound Related?",
+		description: ""
+	},
+	0x3062: {
+		name: "Sound Related?",
+		description: ""
+	},
+	0x3065: {
+		name: "Sound Related?",
+		description: ""
 	},
 
 	0x3070: { 
