@@ -7,15 +7,25 @@ module.exports = (function(){
 		READ = 3,
 		WRITE = 4;
 
+	function decode(data) {
+		return data.match(/../g).map(function(v){
+			return parseInt(v,16);
+		});
+	}
+
+	function encode(data) {
+		return data.map(function (v) {
+			return (0x100 | v).toString(16).substr(1);
+		}).join("");
+	}
+
 	function eeprom(bit_width) {
 		bit_width || (bit_width = 12);
 		var byte_size = 1 << bit_width;
 
 		// Initalize eeprom data (4kB by default)
 		try {
-			this.data = window.localStorage.eeprom_data.match(/../g).map(function(v){
-				return parseInt(v,16);
-			});
+			this.data = decode(window.localStorage.eeprom_data);
 		} catch(e) {
 			this.data = object.fill(byte_size, 0);
 		}
@@ -57,10 +67,7 @@ module.exports = (function(){
 		if (clk && data_d) {
 			if (data_d > 0) { 
 				if (this.state === WRITE && window.localStorage) {
-					window.localStorage.eeprom_data = 
-						this.data.map(function (v) {
-							return (0x100 | v).toString(16).substr(1);
-						}).join("");
+					window.localStorage.eeprom_data = encode(this.data);
 				}
 
 				// Stop
@@ -73,7 +80,6 @@ module.exports = (function(){
 
 				this.bits_tx = 0;
 				this.read = 0;
-				this.write = 0;
 			}
 		}
 
@@ -87,10 +93,14 @@ module.exports = (function(){
 			// Falling edge (delivery)
 			if (this.bits_tx < 8) {
 				// Simply update output buffer
-				this.output = (this.write & 0x80) ? 1 : 0;
-				this.write = this.write << 1;
+				if (this.state === READ) {
+					this.output = ((this.data[this.address] << this.bits_tx) & 0x80) ? 1 : 0;
+				} else {
+					this.output = 1;
+				}
 			} else if (this.bits_tx === 8) {
-				this.write = 0xFF;
+				this.output = 0; // ACK
+
 				// We have received a full command / output a value
 				switch (this.state) {
 				case COMMAND:
@@ -102,8 +112,9 @@ module.exports = (function(){
 						break ;
 					case 0xA1: // Read
 						this.state = READ;
-						this.address &= this.mask;
-						this.write = this.data[this.address++];
+						break ;
+					default:
+						this.output = 1; // NACK
 						break ;
 					}
 					break ;
@@ -114,27 +125,20 @@ module.exports = (function(){
 						this.state = WRITE;
 					}
 					break ;
-				case READ:
-					this.address &= this.mask;
-					this.write = this.data[this.address++];
-					break ;
 				case WRITE:
-					this.address &= this.mask;
-					this.data[this.address++] = this.read & 0xFF;
+					this.data[this.address] = this.read & 0xFF;
+					this.address = (this.address + 1) & this.mask;
+					break ;
+				case READ:
+					this.address = (this.address + 1) & this.mask;
 					break ;
 				}
-
-				this.output = 0; // ACK (always)
 			}
 
 			// Increment bit clock
 			this.bits_tx = (this.bits_tx + 1) % 9;
 		}
 	}
-
-	Object.defineProperty(eeprom.prototype, "output", {
-		get: function () { return this.output; }
-	})
 
 	return {
 		eeprom: eeprom
