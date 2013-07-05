@@ -51,7 +51,8 @@ module.exports = (function() {
 	}
 
 	function Tamago(element) {
-		var u8 = new Uint8Array(this.bios);
+		var u8 = new Uint8Array(this.bios),
+			that = this;
 
 		this.system = new tamagotchi.system();
 
@@ -62,7 +63,18 @@ module.exports = (function() {
 		this._disasmOffset = 0;
 
 		this.refresh();
+
+		document.addEventListener("keyup", function (e) {
+			that.system.keys |= that.mapping[e.keyCode] || 0;
+		});
+		document.addEventListener("keydown", function (e) {
+			that.system.keys &= ~that.mapping[e.keyCode] || 0xFF;
+		});
 	}
+
+	// Keyboard mapping
+	Tamago.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
+
 
 	Tamago.prototype.step = function (e) {
 		this.system.step();

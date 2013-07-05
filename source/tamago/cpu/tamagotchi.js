@@ -19,8 +19,9 @@ module.exports = (function(){
 		this._dram   = new Uint8Array(0x200);		// Display memory
 		this._wram	 = new Uint8Array(0x600);		// System memory
 		this._eeprom = new eeprom.eeprom(12);		// new 32kb eeprom
-		this._keys	 = 0xF;
 		this._irqs = new Uint16Array(0x10000);
+
+		this.keys	 = 0xF;
 
 		// Convert a 16bit mask into a priority encoded IRQ table
 		var irqs = new Uint16Array(this.bios, 0x3FC0, 16);
@@ -35,14 +36,7 @@ module.exports = (function(){
 		this.previous_clock = 0;
 		this.inserted_figure = 0;
 		
-		this._tbh_timer = 0; 	// HACK 
-
-		document.addEventListener("keyup", function (e) {
-			that._keys |= that.mapping[e.keyCode] || 0;
-		});
-		document.addEventListener("keydown", function (e) {
-			that._keys &= ~that.mapping[e.keyCode] || 0xFF;
-		});
+		this._tbh_timer = 0; 	// HACK
 	}
 
 	ready(function() {
@@ -51,7 +45,6 @@ module.exports = (function(){
 
 		system.prototype.PALETTE = [0xffdddddd, 0xff9e9e9e, 0xff606060, 0xff222222];
 
-		system.prototype.mapping = { 65: 1, 83: 2, 68: 4, 82: 8 };
 		system.prototype.CLOCK_RATE = 4000000; // 4MHz
 		system.prototype.MAX_ADVANCE = 1;
 		system.prototype.LCD_ORDER = [
