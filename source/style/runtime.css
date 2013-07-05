@@ -1567,21 +1567,13 @@ tamago[debugger] port {
   height: 13em;
   overflow: hidden;
 }
-tamago[debugger] port h1,
-tamago[debugger] port h2 {
+tamago[debugger] port h1 {
   font-size: 14px;
   margin: 0;
   width: 100%;
-}
-tamago[debugger] port h1 {
-  padding-top: 1ex;
+  padding: 1ex 0 1ex;
   font-weight: bold;
   text-decoration: underline;
-}
-tamago[debugger] port h2 {
-  padding-bottom: 1ex;
-  font-weight: normal;
-  font-style: italic;
 }
 tamago[debugger] port field {
   display: block;

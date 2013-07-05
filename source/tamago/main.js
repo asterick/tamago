@@ -24,10 +24,9 @@ module.exports = (function() {
 		return zeros.substr(0, w).substr(i.length) + i;
 	}
 
-	function start(bios) {
+	function getBinary(path, cb) {
 		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "files/tamago.bin", true);
-
+		xhr.open("GET", path, true);
 		xhr.responseType = "arraybuffer";
 		xhr.send();
 
@@ -37,17 +36,26 @@ module.exports = (function() {
 			}
 
 			if (xhr.status !== 200) {
-				throw new Error("Could not download firmware");
+				throw new Error("Could not download " + path);
 			}
 
-			// Bind to tamago system class
-			tamagotchi.system.prototype.bios = xhr.response;
-
-			// Start the application when BIOS is done
-			[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
-				new Tamago(elem);
-			});
+			cb(xhr.response);
 		};
+	}
+
+	function start(bios) {
+		getBinary("files/tamago.bin", function (bios) {
+			getBinary("files/makiko", function (figure) {
+				// Bind to tamago system class
+				tamagotchi.system.prototype.bios = bios;
+				tamagotchi.system.prototype.figure = figure;
+
+				// Start the application when BIOS is done
+				[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
+					new Tamago(elem);
+				});
+			});
+		});
 	}
 
 	function Tamago(element) {

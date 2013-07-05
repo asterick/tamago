@@ -1,5 +1,4 @@
 <h1><%= name %> (0x<%= address %>)</h1>
-<h2><%= description || "" %></h2>
 
 <% for (var i = 0; i < fields.length; i++ ) { var field = fields[i] %>
 	<field name="<%= field.name %>" data-start="<%= field.start %>" data-length="<%= field.length %>">

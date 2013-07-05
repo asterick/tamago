@@ -3,41 +3,35 @@
   */
 
 module.exports = {
+	// System block
 	0x3000: { 
 		name: "P_CPU_Bank_Ctrl", 
-		description: "Bank Control",
 		fields: [
 			{ name:"bank", start: 0, length: 8 }
 		]
 	},
 	0x3001: { 
 		name: "P_CPU_Clk_Ctrl", 
-		description: "CPU Control",
 	},
 	0x3002: { 
 		name: "P_32768_EN", 
-		description: "32kHZ Timer Control",
 	},
 	0x3004: { 
 		name: "Watchdog Timer?",
-		description: "",
 	},
 	0x3006: {
 		name: "Sound Related?",
-		descripiption: "",
 	},
 	0x3007: { 
 		name: "P_Wakeup_Ctrl",
-		description: "",
 	},
 
+	// Port block
 	0x3010: { 
 		name: "P_PortA_Config",
-		description: "",
 	},
 	0x3011: { 
 		name: "P_PortA_Dir",
-		description: "",
 		fields: [
 			{ name:"IR Transmit", start: 7, length: 1 },
 			{ name:"Cart CD2", start: 6, length: 1 },
@@ -51,7 +45,6 @@ module.exports = {
 	},
 	0x3012: { 
 		name: "P_PortA_Data",
-		description: "",
 		fields: [
 			{ name:"IR Rx", start: 7, length: 1 },
 			{ name:"Cart CD2", start: 6, length: 1 },
@@ -65,15 +58,12 @@ module.exports = {
 	},
 	0x3013: { 
 		name: "P_PortA_Strobe",
-		description: "",
 	},
 	0x3014: { 
 		name: "P_PortB_Config",
-		description: "",
 	},
 	0x3015: { 
 		name: "P_PortB_Dir",
-		description: "",
 		fields: [
 			{ name:"SPI Rx", start: 7, length: 1 },
 			{ name:"SPI Tx", start: 6, length: 1 },
@@ -87,7 +77,6 @@ module.exports = {
 	},
 	0x3016: { 
 		name: "P_PortB_Data",
-		description: "",
 		fields: [
 			{ name:"SPI Rx", start: 7, length: 1 },
 			{ name:"SPI Tx", start: 6, length: 1 },
@@ -100,96 +89,78 @@ module.exports = {
 		]
 	},
 
+	// Timer control block
 	0x3030: { 
 		name: "Timer Control 0?",
-		description: "",
 	},
 	0x3031: { 
 		name: "Timer Control 1?",
-		description: "",
 	},
 	0x3032: { 
 		name: "Timer Output 0 low?",
-		description: "",
 	},
 	0x3033: { 
 		name: "Timer Output 0 high?",
-		description: "",
 	},
 	0x3034: { 
 		name: "Timer Output 1 low?",
-		description: "",
 	},
 	0x3035: { 
 		name: "Timer Output 1 high?",
-		description: "",
 	},
 	0x303E: { 
 		name: "P_Seg0_Scan_Ctrl",
-		description: "",
 	},
 	0x303F: { 
 		name: "P_Seg8_Scan_Ctrl",
-		description: "",
 	},
 
+	// LCD Control block
 	0x3040: { 
 		name: "P_LCD_Setup1",
-		description: "",
 	},
 	0x3041: { 
 		name: "P_LCD_Setup2",
-		description: "",
 	},
 	0x3042: { 
 		name: "P_LCD_Clock1",
-		description: "",
 	},
 	0x3043: { 
 		name: "P_LCD_Clock2",
-		description: "",
 	},
 	0x3044: { 
 		name: "P_LCD_SEG_Num",
-		description: "",
 	},
 	0x3045: { 
 		name: "P_LCD_COM_Num",
-		description: "",
 	},
 	0x3047: { 
 		name: "P_LCD_Buffer_Ctrl",
-		description: "",
 	},
 	0x3048: {
 		name: "P_Contrast_Ctrl",
-		description: ""
 	},
 	0x3049: { 
 		name: "P_LCD_Pump_Ctrl",
-		description: "",
 	},
 
+	// Sound control block
 	0x3060: {
 		name: "Sound Related?",
-		description: ""
 	},
 	0x3062: {
 		name: "Sound Related?",
-		description: ""
 	},
 	0x3064: {
 		name: "Sound Related?",
-		description: ""
 	},
 	0x3065: {
 		name: "Sound Related?",
-		description: ""
 	},
 
+	// Interrupt control block
 	0x3070: { 
 		name: "P_INT_Ctrl0",
-		description: "",
 		fields: [
 			{ name:"Enable TM0", start: 7, length: 1 },
 			{ name:"Enable IRQ1", start: 6, length: 1 },
@@ -203,7 +174,6 @@ module.exports = {
 	},
 	0x3071: { 
 		name: "P_INT_Ctrl1",
-		description: "",
 		fields: [
 			{ name:"Enable IRQ8", start: 7, length: 1 },
 			{ name:"Enable IRQ9", start: 6, length: 1 },
@@ -217,11 +187,9 @@ module.exports = {
 	},
 	0x3072: { 
 		name: "P_INT_Ctrl2 ?",
-		description: "",
 	},
 	0x3073: { 
 		name: "P_INT_Flag0",
-		description: "",
 		fields: [
 			{ name:"Pending TM0", start: 7, length: 1 },
 			{ name:"Pending IRQ1", start: 6, length: 1 },
@@ -235,7 +203,6 @@ module.exports = {
 	},
 	0x3074: { 
 		name: "P_INT_Flag1",
-		description: "",
 		fields: [
 			{ name:"Pending IRQ8", start: 7, length: 1 },
 			{ name:"Pending IRQ9", start: 6, length: 1 },
@@ -249,10 +216,37 @@ module.exports = {
 	},
 	0x3075: { 
 		name: "P_INT_Flag2 ?",
-		description: "",
 	},
 	0x3076: { 
 		name: "P_NMI_Ctrl",
-		description: "",
+	},
+
+	// SPI 
+	0x30B0: {
+		name: "P_SPI_Ctrl ?",
+	},
+	0x30B1: {
+		name: "SPI related",
+	},
+	0x30B2: {
+		name: "SPI related ?",
+	},
+	0x30B3: {
+		name: "P_SPI_Write ?",
+	},
+	0x30B4: {
+		name: "SPI related ?",
+	},
+	0x30B5: {
+		name: "SPI related ?",
+	},
+	0x30B6: {
+		name: "P_SPI_Read ?",
+	},
+	0x30B7: {
+		name: "P_SPI_Status ?",
+	},
+	0x30BA: {
+		name: "SPI related ?"
 	},
 };
