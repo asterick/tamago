@@ -41,8 +41,7 @@ module.exports = (function () {
 
 	function read_portb_data(reg, value) {
 		var mask = this._cpureg[0x15],
-			input = 
-				(this._eeprom.output ? 1 : 0);
+			input = (this._eeprom.output ? 1 : 0);
 		
 		return (mask & this._cpureg[0x16]) | (~mask & input);
 	}

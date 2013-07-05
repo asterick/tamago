@@ -114,6 +114,8 @@ module.exports = (function(){
 		system.prototype.init = function () {
 			var i, data;
 
+			r6502.r6502.init.call(this);
+
 			// Work ram
 			for (i = 0x0000; i < 0x1000; i+=0x0100) {
 				data = new Uint8Array(this._wram.buffer, i % this._wram.length, 0x100);

@@ -7,14 +7,14 @@ module.exports = (function(){
 	var r6502 = {},
 		ops = {};
 
-	r6502.reset = function () {
+	r6502.init = function () {
 		this.a = 0;
 		this.x = 0;
 		this.y = 0;
 		this.s = 0;
 		this.p = 0;
 		this.cycles = 0;
-		this.pc = this.read_16(0xFFFC);
+		this.pc = 0;
 
 		object.each(instructions, function(op, code) {
 			ops[code] = {
@@ -23,6 +23,10 @@ module.exports = (function(){
 				cycles: op.cycles
 			};
 		});
+	}
+
+	r6502.reset = function () {
+		this.pc = this.read_16(0xFFFC);
 	}
 
 	r6502.nmi = function () {
