@@ -45,15 +45,12 @@ module.exports = (function() {
 
 	function start(bios) {
 		getBinary("files/tamago.bin", function (bios) {
-			getBinary("files/makiko", function (figure) {
-				// Bind to tamago system class
-				tamagotchi.system.prototype.bios = bios;
-				tamagotchi.system.prototype.figure = figure;
+			// Bind to tamago system class
+			tamagotchi.system.prototype.bios = bios;
 
-				// Start the application when BIOS is done
-				[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
-					new Tamago(elem);
-				});
+			// Start the application when BIOS is done
+			[].forEach.call(document.querySelectorAll("tamago"), function (elem) {
+				new Tamago(elem);
 			});
 		});
 	}
@@ -147,6 +144,25 @@ module.exports = (function() {
 	
 		this.body.display.putImageData(this._pixeldata, 0, 0);
 	}
+
+	Tamago.prototype.drop = function (evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		 
+		var files = evt.dataTransfer.files,
+			binary = files[0],
+			that = this;
+		
+		if (files.length < 0) { return ; }
+
+		this.body.figure.innerHTML = binary.name + " inserted";
+		
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			that.system.insert_figure(e.target.results);
+		}
+		reader.readAsArrayBuffer(binary);
+	};
 
 	Tamago.prototype.update_control = function (e) {
 		if (e) {
@@ -277,6 +293,16 @@ module.exports = (function() {
 
 		element.innerHTML = mainTemplate(data);
 
+		function noopHandler(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+		}
+
+		element.addEventListener("dragenter", noopHandler, false);
+		element.addEventListener("dragexit", noopHandler, false);
+		element.addEventListener("dragover", noopHandler, false);
+		element.addEventListener("drop", this.drop.bind(this), false);
+
 		// Bind to HTML
 		if (data.debug) {
 			[].forEach.call(document.querySelectorAll("input[type=button]"), function (el) {
@@ -315,7 +341,8 @@ module.exports = (function() {
 				memory: [].map.call(element.querySelectorAll("memory byte"), function (b) {
 					return b;
 				}),
-				display: element.querySelector("display canvas").getContext("2d")
+				display: element.querySelector("display canvas").getContext("2d"),
+				figure: element.querySelector("display figure")
 			};
 
 			document.querySelector("select[action=figure]").addEventListener("change", function(e) {
@@ -329,7 +356,8 @@ module.exports = (function() {
 		} else {
 			this.body = { 
 				glyphs: element.querySelectorAll("i.glyph"),
-				display: element.querySelector("display canvas").getContext("2d")
+				display: element.querySelector("display canvas").getContext("2d"),
+				figure: element.querySelector("display figure")
 			};
 
 			this.refresh = this.refresh_simple;

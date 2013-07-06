@@ -60,6 +60,8 @@ module.exports = (function () {
 			"             ", 
 			(ports[reg|0x3000] || {}).name || "---");
 
+		if (reg == 0xB7) return 0xFF;
+
 		return this._cpureg[reg];
 	}
 

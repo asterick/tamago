@@ -104,6 +104,10 @@ module.exports = (function(){
 			this._cpureg[0x73 + (i >> 3)] |= 0x80 >> (i & 7);
 		}
 
+		system.prototype.insert_figure = function (data) {
+			this.spi_rom = new Uint8Array(data);
+		};
+
 		system.prototype.init = function () {
 			var i, data;
 

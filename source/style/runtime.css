@@ -1407,7 +1407,12 @@ tamago[debugger] buttons {
 tamago[debugger] display {
   text-align: center;
   display: block;
-  padding: 20px;
+  padding: 10px;
+}
+tamago[debugger] display figure {
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
 }
 tamago[debugger] display canvas {
   border: 2px solid #ffaaff;
