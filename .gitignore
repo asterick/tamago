@@ -1,5 +1,6 @@
 .DS_Store
 .sass-cache
-source/tamago.release.js
-source/style/runtime.css
+web/tamagotchi.js
+web/tamagotchi.min.js
+web/style/runtime.css
 node_modules
