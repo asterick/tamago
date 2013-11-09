@@ -1,11 +1,11 @@
 
 var r6502 = require("./6502.js"),
-	eeprom = require("./eeprom.js"),
-	registers = require("./registers.js"),
-	object = require("../../util/object.js");
+		eeprom = require("./eeprom.js"),
+		registers = require("./registers.js"),
+		object = require("../../util/object.js");
 
 var ACCESS_READ		= 0x01,
-	ACCESS_WRITE	= 0x02;
+		ACCESS_WRITE	= 0x02;
 
 function system() {
 	var that = this;

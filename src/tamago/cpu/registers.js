@@ -1,6 +1,5 @@
-
 var ports = require("../data/ports.js"),
-	object = require("../../util/object.js");
+		object = require("../../util/object.js");
 
 // ==== Bank Switch ====
 function write_bank(reg, value) {
