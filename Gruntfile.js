@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 					style: 'expanded'
 				},
 				files: {
-					'source/style/runtime.css': 'less/runtime.less'
+					'web/style/runtime.css': 'less/runtime.less'
 				}
 			}
 		},
@@ -16,59 +16,48 @@ module.exports = function(grunt) {
 			less: {
 				files: ["less/**/*"],
 				tasks: ["less"]
+			},
+			browserify: {
+				files: ["src/**/*"],
+				tasks: ["browserify"]
 			}
 		},
 		connect: {
 			server: {
 				options: {
-					rewrites: {
-						'/files/modules.js': fs.readFileSync('node_modules/modules/lib/modules.js', 'utf-8')
-					},
 					port: 9001,
-					base: 'source',
-					middleware: function(connect, options) {
-						return [
-							function (req, res, next) {
-								var rw = options.rewrites[req._parsedUrl.pathname];
-								if (!rw) {
-									next();
-									return ;
-								}
-								res.writeHead(200, {'Content-Type': 'text/javascript'});
-								res.end(rw);
-							},
-							connect.static(options.base),
-							connect.directory(options.base),
-						];
-					}
+					base: 'web'
 				}
 			}
 		},
-		modules: {
-			tamago: {
-				root: "source",
-				output: "source/tamago.release.js",
-				files: {
-					src: ["source/tamago.js"]
-				},
-				format: {
-			        renumber: true,
-			        hexadecimal: true,
-			        quotes: "auto",
-			        escapeless: true,
-			        compact: true,
-			        parentheses: false,
-			        semicolons: false
-			    }
-    		}
+	  uglify: {
+	    options: {
+	      mangle: true,
+	      compress: { warnings: false },
+	      preserveComments: 'some'
+	    },
+	    prod: {
+	      files: {
+	        'web/tamagotchi.min.js': ['web/tamagotchi.js']
+	      }
+	    }
+	  },
+		browserify: {
+		  dist: {
+		  	options: { debug: true },
+		    files: {
+		      'web/tamagotchi.js': ['src/**/*.js']
+		    }
+		  }
 		}
 	});
 
-	grunt.loadNpmTasks("modules");
+	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 
-	grunt.registerTask("default", ["modules"]);
-	grunt.registerTask("dev", ["connect", "less", "watch"]);
+	grunt.registerTask("default", ["browserify", "less"]);
+	grunt.registerTask("dev", ["connect", "default", "watch"]);
 };

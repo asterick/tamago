@@ -7,7 +7,9 @@
     "grunt-contrib-connect": "~0.3.0",
     "grunt-contrib-watch": "~0.4.4",
     "grunt-contrib-less": "*",
-    "modules": "git://github.com/asterick/modules.git"
+    "grunt-contrib-uglify": "~0.2.6",
+    "browserify": "~2.35.1",
+    "grunt-browserify": "~1.2.11"
   },
   "repository": {
     "type": "git",
