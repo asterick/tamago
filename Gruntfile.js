@@ -44,7 +44,10 @@ module.exports = function(grunt) {
 	  },
 		browserify: {
 		  dist: {
-		  	options: { debug: true },
+		  	options: {
+		  		debug: true,
+		  		transform: ["browserify-ejs"]		  		
+		  	},
 		    files: {
 		      'web/tamagotchi.js': ['src/**/*.js']
 		    }

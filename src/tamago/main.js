@@ -1,3 +1,13 @@
+var config = require ("./config.js"),
+	tamagotchi = require("./cpu/tamagotchi.js"),
+	disassemble = require("./cpu/disassembler.js"),
+	ports = require("./data/ports.js"),
+
+	object = require("../util/object.js"),
+	
+	mainTemplate = require("../templates/main.html"),
+	portTemplate = require("../templates/port.html");
+
 function getBinary(path, cb) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", path, true);
@@ -16,25 +26,6 @@ function getBinary(path, cb) {
 		cb(xhr.response);
 	};
 }
-
-function requireText(url) {
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", url, false);
-	xhr.send();
-
-	return xhr.responseText;
-}
-
-var config = require ("./config.js"),
-	tamagotchi = require("./cpu/tamagotchi.js"),
-	disassemble = require("./cpu/disassembler.js"),
-	ports = require("./data/ports.js"),
-
-	object = require("../util/object.js"),
-	ejs = require("../util/ejs.js"),
-	
-	mainTemplate = ejs.parse(requireText("templates/main.html")),
-	portTemplate = ejs.parse(requireText("templates/port.html"));
 
 function toHex(w, i) { 
 	i = i.toString(16).toUpperCase();

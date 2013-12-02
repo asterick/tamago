@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "description": "Tama-Town test framework",
   "dependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-connect": "~0.3.0",
-    "grunt-contrib-watch": "~0.4.4",
-    "grunt-contrib-less": "*",
-    "grunt-contrib-uglify": "~0.2.6",
-    "browserify": "~2.35.1",
-    "grunt-browserify": "~1.2.11"
+    "browserify-ejs": "0.0.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt": "~0.4.2",
+    "grunt-browserify": "~1.2.11",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-connect": "~0.5.0",
+    "browserify": "~2.36.0",
+    "grunt-contrib-less": "~0.8.2"
   },
   "repository": {
     "type": "git",
